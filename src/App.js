@@ -1,14 +1,15 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
+import { AuthProvider } from "./contexts/AuthContext";
 import Login from "./pages/Login";
 
 function App() {
 	return (
-		<>
+		<AuthProvider>
 			<Routes>
 				<Route path="/" element={<Login />} />
 			</Routes>
-		</>
+		</AuthProvider>
 	);
 }
 
