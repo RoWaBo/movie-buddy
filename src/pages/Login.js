@@ -2,6 +2,8 @@ import { AnimatePresence, motion } from "framer-motion";
 import ErrorMessage from "../components/ErrorMessage";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
+/** @jsxImportSource @emotion/react */
+import { css } from "@emotion/react";
 
 const Login = () => {
 	const {
@@ -22,10 +24,20 @@ const Login = () => {
 		})();
 	};
 
+	// === STYLE ===
+	const formStyle = css`
+		width: 100%;
+		padding: 2rem;
+		.input {
+			display: block;
+		}
+	`;
+
 	return (
 		<AnimatePresence>
-			<motion.form onSubmit={handleSubmit(onSubmit)} layout>
+			<motion.form css={formStyle} onSubmit={handleSubmit(onSubmit)} layout>
 				<motion.input
+					className="input"
 					layout
 					type="text"
 					placeholder={"username"}
@@ -36,6 +48,7 @@ const Login = () => {
 					})}
 				/>
 				<motion.input
+					className="input"
 					layout
 					type="password"
 					placeholder="password"
