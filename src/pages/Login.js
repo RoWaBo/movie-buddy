@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
+import { useAuth } from "../contexts/AuthContext";
 
 const Login = () => {
 	const {
@@ -12,14 +13,16 @@ const Login = () => {
 		formState: { errors },
 	} = useForm();
 	const [loginErrorMessage, setloginErrorMessage] = useState();
+	const { signUp } = useAuth();
 
 	const onSubmit = userLogin => {
 		(async () => {
 			try {
 				console.log("userLogin: ", userLogin);
+				signUp(userLogin.email, userLogin.password);
 			} catch (error) {
 				console.log(error);
-				setloginErrorMessage("User name or password is incorrect");
+				setloginErrorMessage("Email or password is incorrect");
 			}
 		})();
 	};
@@ -40,11 +43,11 @@ const Login = () => {
 					className="input"
 					layout
 					type="text"
-					placeholder={"username"}
+					placeholder={"email"}
 					onFocus={() => setloginErrorMessage(false)}
 					whileFocus={{ scale: 1.02 }}
-					{...register("username", {
-						required: "Write valid username",
+					{...register("email", {
+						required: "Write valid email",
 					})}
 				/>
 				<motion.input
@@ -62,11 +65,11 @@ const Login = () => {
 					<ErrorMessage icon>
 						{loginErrorMessage
 							? loginErrorMessage
-							: "Username and password is required"}
+							: "Email and password is required"}
 					</ErrorMessage>
 				)}
 				<motion.button layout type="submit">
-					Login
+					Sign up
 				</motion.button>
 			</motion.form>
 		</AnimatePresence>
