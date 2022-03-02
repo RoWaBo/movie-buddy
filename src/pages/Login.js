@@ -21,8 +21,7 @@ const Login = () => {
 		}
 		(async () => {
 			try {
-				const userCredentials = await signUp(form.email, form.password);
-				console.log("userCredentials: ", userCredentials);
+				await signUp(form.email, form.password);
 			} catch (error) {
 				setErrorMessage(error.message);
 			}

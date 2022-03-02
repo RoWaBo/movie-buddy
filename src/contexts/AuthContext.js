@@ -16,14 +16,17 @@ export const AuthProvider = ({ children }) => {
 	const [currentUser, setCurrentUser] = useState();
 	const [loading, setLoading] = useState(true);
 
-	const signUp = (email, password) => {
-		return createUserWithEmailAndPassword(auth, email, password);
+	const signUp = async (email, password) => {
+		const userCredentials = await createUserWithEmailAndPassword(
+			auth,
+			email,
+			password
+		);
+		userCredentials && sendEmailVerification(userCredentials.user);
 	};
 
 	useEffect(() => {
 		const unsubscribe = onAuthStateChanged(auth, user => {
-			console.log("onAuthStateChanged ran");
-			// !user?.emailVerified && sendEmailVerification(user);
 			setCurrentUser(user);
 			setLoading(false);
 		});
