@@ -7,20 +7,23 @@ import { css } from "@emotion/react";
 import { useAuth } from "../contexts/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
 
-const Login = () => {
+const SignUp = () => {
 	const {
 		register,
 		handleSubmit,
 		formState: { errors },
 	} = useForm();
 	const [errorMessage, setErrorMessage] = useState();
-	const { login } = useAuth();
+	const { signUp } = useAuth();
 	const navigate = useNavigate();
 
 	const onSubmit = form => {
+		if (form.password !== form.confirmPassword) {
+			return setErrorMessage("Passwords must match");
+		}
 		(async () => {
 			try {
-				await login(form.email, form.password);
+				await signUp(form.username, form.email, form.password);
 				navigate("/profile");
 			} catch (error) {
 				setErrorMessage(error.message);
@@ -48,6 +51,17 @@ const Login = () => {
 					className="input"
 					layout
 					type="text"
+					placeholder={"username"}
+					onFocus={() => setErrorMessage(false)}
+					whileFocus={{ scale: 1.02 }}
+					{...register("username", {
+						required: "username is required",
+					})}
+				/>
+				<motion.input
+					className="input"
+					layout
+					type="text"
 					placeholder={"email"}
 					onFocus={() => setErrorMessage(false)}
 					whileFocus={{ scale: 1.02 }}
@@ -66,21 +80,32 @@ const Login = () => {
 						required: "password is required",
 					})}
 				/>
+				<motion.input
+					className="input"
+					layout
+					type="password"
+					placeholder="confirm password"
+					onFocus={() => setErrorMessage(false)}
+					whileFocus={{ scale: 1.02 }}
+					{...register("confirmPassword")}
+				/>
 				{(Object.keys(errors).length !== 0 || errorMessage) && (
 					<ErrorMessage icon>
-						{errorMessage ? errorMessage : "Email and password is required"}
+						{errorMessage
+							? errorMessage
+							: "Username, email and password is required"}
 					</ErrorMessage>
 				)}
 				<motion.button layout type="submit">
-					Log in
+					Sign up
 				</motion.button>
 			</motion.form>
 			<motion.div key="linkContainer" layout>
-				<p>Need an account?</p>
-				<Link to="/">Sign Up</Link>
+				<p>Already have an account?</p>
+				<Link to="/login">Log In</Link>
 			</motion.div>
 		</AnimatePresence>
 	);
 };
 
-export default Login;
+export default SignUp;
