@@ -12,17 +12,19 @@ const Login = () => {
 		handleSubmit,
 		formState: { errors },
 	} = useForm();
-	const [loginErrorMessage, setloginErrorMessage] = useState();
+	const [errorMessage, setErrorMessage] = useState();
 	const { signUp } = useAuth();
 
-	const onSubmit = userLogin => {
+	const onSubmit = form => {
+		if (form.password !== form.confirmPassword) {
+			return setErrorMessage("Passwords must match");
+		}
 		(async () => {
 			try {
-				console.log("userLogin: ", userLogin);
-				signUp(userLogin.email, userLogin.password);
+				const userCredentials = await signUp(form.email, form.password);
+				console.log("userCredentials: ", userCredentials);
 			} catch (error) {
-				console.log(error);
-				setloginErrorMessage("Email or password is incorrect");
+				setErrorMessage(error.message);
 			}
 		})();
 	};
@@ -44,10 +46,10 @@ const Login = () => {
 					layout
 					type="text"
 					placeholder={"email"}
-					onFocus={() => setloginErrorMessage(false)}
+					onFocus={() => setErrorMessage(false)}
 					whileFocus={{ scale: 1.02 }}
 					{...register("email", {
-						required: "Write valid email",
+						required: "email is required",
 					})}
 				/>
 				<motion.input
@@ -55,17 +57,29 @@ const Login = () => {
 					layout
 					type="password"
 					placeholder="password"
-					onFocus={() => setloginErrorMessage(false)}
+					onFocus={() => setErrorMessage(false)}
 					whileFocus={{ scale: 1.02 }}
 					{...register("password", {
-						required: "Write valid password",
+						required: "password is required",
 					})}
 				/>
-				{(errors.username || errors.password || loginErrorMessage) && (
+				<motion.input
+					className="input"
+					layout
+					type="password"
+					placeholder="confirm password"
+					onFocus={() => setErrorMessage(false)}
+					whileFocus={{ scale: 1.02 }}
+					{...register("confirmPassword", {
+						required: "Confirm password is required",
+					})}
+				/>
+				{(errors.username ||
+					errors.password ||
+					errors.confirmPassword ||
+					errorMessage) && (
 					<ErrorMessage icon>
-						{loginErrorMessage
-							? loginErrorMessage
-							: "Email and password is required"}
+						{errorMessage ? errorMessage : "Email and password is required"}
 					</ErrorMessage>
 				)}
 				<motion.button layout type="submit">

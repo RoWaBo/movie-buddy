@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 
 const ErrorMessage = ({ children, icon, ...props }) => {
 	const messageStyle = css`
-		font-size: 1rem;
+		font-size: 14px;
 		color: white;
 		${!icon && "text-align: center;"};
 	`;
