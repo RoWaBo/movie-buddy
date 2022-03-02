@@ -1,7 +1,7 @@
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from '../contexts/AuthContext'
 
 const Profile = () => {
-	const { currentUser, logout } = useAuth();
+	const { currentUser, logout } = useAuth()
 
 	return currentUser ? (
 		<>
@@ -11,7 +11,7 @@ const Profile = () => {
 		</>
 	) : (
 		<p>No user logged in</p>
-	);
-};
+	)
+}
 
-export default Profile;
+export default Profile
