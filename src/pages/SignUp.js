@@ -7,20 +7,22 @@ import { css } from "@emotion/react";
 import { useAuth } from "../contexts/AuthContext";
 import { Link } from "react-router-dom";
 
-const Login = () => {
+const SignUp = () => {
 	const {
 		register,
 		handleSubmit,
 		formState: { errors },
 	} = useForm();
 	const [errorMessage, setErrorMessage] = useState();
-	// const { signUp } = useAuth();
+	const { signUp } = useAuth();
 
 	const onSubmit = form => {
+		if (form.password !== form.confirmPassword) {
+			return setErrorMessage("Passwords must match");
+		}
 		(async () => {
 			try {
-				// await signUp(form.email, form.password);
-				console.log(form);
+				await signUp(form.email, form.password);
 			} catch (error) {
 				setErrorMessage(error.message);
 			}
@@ -65,21 +67,35 @@ const Login = () => {
 						required: "password is required",
 					})}
 				/>
-				{(errors.username || errors.password || errorMessage) && (
+				<motion.input
+					className="input"
+					layout
+					type="password"
+					placeholder="confirm password"
+					onFocus={() => setErrorMessage(false)}
+					whileFocus={{ scale: 1.02 }}
+					{...register("confirmPassword", {
+						required: "Confirm password is required",
+					})}
+				/>
+				{(errors.username ||
+					errors.password ||
+					errors.confirmPassword ||
+					errorMessage) && (
 					<ErrorMessage icon>
 						{errorMessage ? errorMessage : "Email and password is required"}
 					</ErrorMessage>
 				)}
 				<motion.button layout type="submit">
-					Log in
+					Sign up
 				</motion.button>
 			</motion.form>
 			<motion.div key="linkContainer" layout>
-				<p>Need an account?</p>
-				<Link to="/signup">Sign up</Link>
+				<p>Already have an account?</p>
+				<Link to="/login">Log in</Link>
 			</motion.div>
 		</AnimatePresence>
 	);
 };
 
-export default Login;
+export default SignUp;
