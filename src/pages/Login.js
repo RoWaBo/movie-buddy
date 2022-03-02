@@ -5,7 +5,7 @@ import { useState } from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { useAuth } from "../contexts/AuthContext";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
 	const {
@@ -14,13 +14,14 @@ const Login = () => {
 		formState: { errors },
 	} = useForm();
 	const [errorMessage, setErrorMessage] = useState();
-	// const { signUp } = useAuth();
+	const { login } = useAuth();
+	const navigate = useNavigate();
 
 	const onSubmit = form => {
 		(async () => {
 			try {
-				// await signUp(form.email, form.password);
-				console.log(form);
+				await login(form.email, form.password);
+				navigate("/profile");
 			} catch (error) {
 				setErrorMessage(error.message);
 			}
@@ -76,7 +77,7 @@ const Login = () => {
 			</motion.form>
 			<motion.div key="linkContainer" layout>
 				<p>Need an account?</p>
-				<Link to="/signup">Sign up</Link>
+				<Link to="/signup">Sign Up</Link>
 			</motion.div>
 		</AnimatePresence>
 	);

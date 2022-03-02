@@ -5,7 +5,7 @@ import { useState } from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { useAuth } from "../contexts/AuthContext";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const SignUp = () => {
 	const {
@@ -15,6 +15,7 @@ const SignUp = () => {
 	} = useForm();
 	const [errorMessage, setErrorMessage] = useState();
 	const { signUp } = useAuth();
+	const navigate = useNavigate();
 
 	const onSubmit = form => {
 		if (form.password !== form.confirmPassword) {
@@ -23,6 +24,7 @@ const SignUp = () => {
 		(async () => {
 			try {
 				await signUp(form.email, form.password);
+				navigate("/profile");
 			} catch (error) {
 				setErrorMessage(error.message);
 			}
@@ -92,7 +94,7 @@ const SignUp = () => {
 			</motion.form>
 			<motion.div key="linkContainer" layout>
 				<p>Already have an account?</p>
-				<Link to="/login">Log in</Link>
+				<Link to="/login">Log In</Link>
 			</motion.div>
 		</AnimatePresence>
 	);
