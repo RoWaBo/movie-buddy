@@ -76,14 +76,9 @@ const SignUp = () => {
 					placeholder="confirm password"
 					onFocus={() => setErrorMessage(false)}
 					whileFocus={{ scale: 1.02 }}
-					{...register("confirmPassword", {
-						required: "Confirm password is required",
-					})}
+					{...register("confirmPassword")}
 				/>
-				{(errors.username ||
-					errors.password ||
-					errors.confirmPassword ||
-					errorMessage) && (
+				{(Object.keys(errors).length !== 0 || errorMessage) && (
 					<ErrorMessage icon>
 						{errorMessage ? errorMessage : "Email and password is required"}
 					</ErrorMessage>

@@ -66,7 +66,7 @@ const Login = () => {
 						required: "password is required",
 					})}
 				/>
-				{(errors.username || errors.password || errorMessage) && (
+				{(Object.keys(errors).length !== 0 || errorMessage) && (
 					<ErrorMessage icon>
 						{errorMessage ? errorMessage : "Email and password is required"}
 					</ErrorMessage>
