@@ -77,7 +77,7 @@ const Login = () => {
 			</motion.form>
 			<motion.div key="linkContainer" layout>
 				<p>Need an account?</p>
-				<Link to="/signup">Sign Up</Link>
+				<Link to="/">Sign Up</Link>
 			</motion.div>
 		</AnimatePresence>
 	);

@@ -37,10 +37,11 @@ export const AuthProvider = ({ children }) => {
 	const logout = () => signOut(auth);
 
 	useEffect(() => {
-		return onAuthStateChanged(auth, user => {
+		const unsubscribe = onAuthStateChanged(auth, user => {
 			setCurrentUser(user);
 			setLoading(false);
 		});
+		return unsubscribe;
 	}, []);
 
 	const contextValues = {
