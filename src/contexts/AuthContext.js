@@ -5,6 +5,7 @@ import {
 	sendEmailVerification,
 	signInWithEmailAndPassword,
 	signOut,
+	updateProfile,
 } from "firebase/auth";
 import { auth } from "../firebaseConfig";
 
@@ -18,27 +19,28 @@ export const AuthProvider = ({ children }) => {
 	const [currentUser, setCurrentUser] = useState();
 	const [loading, setLoading] = useState(true);
 
-	const signUp = async (email, password) => {
+	const signUp = async (username, email, password) => {
 		const userCredentials = await createUserWithEmailAndPassword(
 			auth,
 			email,
 			password
 		);
-		userCredentials && sendEmailVerification(userCredentials.user);
+		await updateProfile(userCredentials.user, {
+			displayName: username,
+		});
+		await sendEmailVerification(userCredentials.user);
 		return userCredentials;
 	};
-	const login = (email, password) => {
-		return signInWithEmailAndPassword(auth, email, password);
-	};
-	const logout = () => signOut();
+
+	const login = (email, password) => signInWithEmailAndPassword(auth, email, password);
+
+	const logout = () => signOut(auth);
 
 	useEffect(() => {
-		const unsubscribe = onAuthStateChanged(auth, user => {
+		return onAuthStateChanged(auth, user => {
 			setCurrentUser(user);
 			setLoading(false);
 		});
-
-		return unsubscribe;
 	}, []);
 
 	const contextValues = {

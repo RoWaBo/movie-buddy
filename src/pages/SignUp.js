@@ -23,7 +23,7 @@ const SignUp = () => {
 		}
 		(async () => {
 			try {
-				await signUp(form.email, form.password);
+				await signUp(form.username, form.email, form.password);
 				navigate("/profile");
 			} catch (error) {
 				setErrorMessage(error.message);
@@ -47,6 +47,17 @@ const SignUp = () => {
 				css={formStyle}
 				onSubmit={handleSubmit(onSubmit)}
 				layout>
+				<motion.input
+					className="input"
+					layout
+					type="text"
+					placeholder={"username"}
+					onFocus={() => setErrorMessage(false)}
+					whileFocus={{ scale: 1.02 }}
+					{...register("username", {
+						required: "username is required",
+					})}
+				/>
 				<motion.input
 					className="input"
 					layout
@@ -80,7 +91,9 @@ const SignUp = () => {
 				/>
 				{(Object.keys(errors).length !== 0 || errorMessage) && (
 					<ErrorMessage icon>
-						{errorMessage ? errorMessage : "Email and password is required"}
+						{errorMessage
+							? errorMessage
+							: "Username, email and password is required"}
 					</ErrorMessage>
 				)}
 				<motion.button layout type="submit">
