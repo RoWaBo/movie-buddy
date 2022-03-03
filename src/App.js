@@ -1,5 +1,6 @@
 import React from 'react'
 import { Route, Routes } from 'react-router-dom'
+import RequireAuth from './components/RequireAuth'
 import { AuthProvider } from './contexts/AuthContext'
 import Login from './pages/Login'
 import Profile from './pages/Profile'
@@ -10,8 +11,16 @@ function App() {
 		<AuthProvider>
 			<Routes>
 				<Route path='/login' element={<Login />} />
-				<Route path='/' element={<SignUp />} />
-				<Route path='/profile' element={<Profile />} />
+				<Route path='/signup' element={<SignUp />} />
+				<Route
+					path='/profile'
+					element={
+						<RequireAuth>
+							<Profile />
+						</RequireAuth>
+					}
+				/>
+				<Route path='*' element={<Login />} />
 			</Routes>
 		</AuthProvider>
 	)
