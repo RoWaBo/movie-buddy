@@ -4,20 +4,29 @@ import { db } from '../firebaseConfig'
 
 const useProfile = () => {
 	const { currentUser } = useAuth()
+	const profileRef = doc(db, `profiles/${currentUser.uid}`)
 
-	const addProfile = async (profileData) => {
-		const profileRef = doc(db, `profiles/${profileData.uid}`)
-		return await setDoc(profileRef, profileData, { merge: true })
+	const addCurrentUserProfile = async (profileData) => {
+		return await setDoc(
+			profileRef,
+			{ ...profileData, uid: currentUser.uid },
+			{ merge: true }
+		)
 	}
 
-	const getCurrentProfile = async () => {
-		const profileRef = doc(db, `profiles/${currentUser.uid}`)
+	const getCurrentUserProfile = async () => {
 		const profile = await getDoc(profileRef)
-		console.log('Current profile: ', profile.data())
+		// console.log('Current profile: ', profile.data())
 		return profile.data()
 	}
 
-	return { addProfile, getCurrentProfile }
+	const getMovieGenres = async () => {
+		const movieGenreRef = doc(db, `movieGenres/movieGenresDoc`)
+		const movieGenres = await getDoc(movieGenreRef)
+		return movieGenres.data()
+	}
+
+	return { addCurrentUserProfile, getCurrentUserProfile, getMovieGenres }
 }
 
 export default useProfile
