@@ -13,6 +13,7 @@ const Profile = () => {
 		register,
 		handleSubmit,
 		formState: { errors },
+		setValue,
 	} = useForm()
 	const [errorMessage, setErrorMessage] = useState()
 	const navigate = useNavigate()
@@ -22,18 +23,6 @@ const Profile = () => {
 	const [userProfile, setUserProfile] = useState()
 	const [favMovieGenres, setFavMovieGenres] = useState([])
 
-	// Get current user profile if it exist
-	useEffect(() => {
-		if (userProfile) return
-		;(async () => {
-			const profile = await getCurrentUserProfile()
-			if (profile) {
-				setUserProfile(profile)
-				setFavMovieGenres(profile.favMovieGenres)
-			}
-		})()
-	}, [userProfile, getCurrentUserProfile])
-
 	// Get movie genres
 	useEffect(() => {
 		if (movieGenres) return
@@ -42,6 +31,23 @@ const Profile = () => {
 			setMovieGenres(movieGenres)
 		})()
 	}, [movieGenres, getMovieGenres])
+
+	// Get current user profile if it exist
+	useEffect(() => {
+		if (userProfile) return
+		;(async () => {
+			const profile = await getCurrentUserProfile()
+			profile && syncFormWithProfile(profile)
+		})()
+	}, [userProfile, getCurrentUserProfile, syncFormWithProfile])
+
+	function syncFormWithProfile(profile) {
+		setUserProfile(profile)
+		setFavMovieGenres(profile.favMovieGenres)
+		setValue('name', profile.name)
+		setValue('age', profile.age)
+		setValue('bio', profile.bio)
+	}
 
 	const onSubmit = async (form) => {
 		try {
@@ -106,7 +112,6 @@ const Profile = () => {
 							layout
 							type='text'
 							placeholder={'name'}
-							defaultValue={userProfile?.name}
 							onFocus={() => setErrorMessage(false)}
 							whileFocus={{ scale: 1.02 }}
 							{...register('name')}
@@ -116,7 +121,6 @@ const Profile = () => {
 							layout
 							type='number'
 							placeholder='age'
-							defaultValue={userProfile?.age}
 							onFocus={() => setErrorMessage(false)}
 							whileFocus={{ scale: 1.02 }}
 							{...register('age')}
@@ -125,7 +129,6 @@ const Profile = () => {
 							className='textarea'
 							layout
 							placeholder='write bio'
-							defaultValue={userProfile?.bio}
 							onFocus={() => setErrorMessage(false)}
 							whileFocus={{ scale: 1.02 }}
 							{...register('bio')}
