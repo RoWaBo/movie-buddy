@@ -23,6 +23,14 @@ const Profile = () => {
 	const [userProfile, setUserProfile] = useState()
 	const [favMovieGenres, setFavMovieGenres] = useState([])
 
+	// Get current user profile if it exist
+	useEffect(() => {
+		if (userProfile) return
+		;(async () => {
+			const profile = await getCurrentUserProfile()
+			profile && syncFormWithProfile(profile)
+		})()
+	}, [userProfile, getCurrentUserProfile, syncFormWithProfile])
 	// Get movie genres
 	useEffect(() => {
 		if (movieGenres) return
@@ -32,21 +40,13 @@ const Profile = () => {
 		})()
 	}, [movieGenres, getMovieGenres])
 
-	// Get current user profile if it exist
-	useEffect(() => {
-		if (userProfile) return
-		;(async () => {
-			const profile = await getCurrentUserProfile()
-			profile && syncFormWithProfile(profile)
-		})()
-	}, [userProfile, getCurrentUserProfile, syncFormWithProfile])
-
 	function syncFormWithProfile(profile) {
 		setUserProfile(profile)
 		setFavMovieGenres(profile.favMovieGenres)
-		setValue('name', profile.name)
-		setValue('age', profile.age)
-		setValue('bio', profile.bio)
+		const inputFieldsToUpdate = ['name', 'age', 'bio']
+		inputFieldsToUpdate.forEach((inputField) =>
+			setValue(inputField, profile[inputField])
+		)
 	}
 
 	const onSubmit = async (form) => {
@@ -99,7 +99,7 @@ const Profile = () => {
 	if (movieGenres)
 		return (
 			<>
-				<h1>{userProfile ? 'Edit Profile' : 'Create Profile'}</h1>
+				<h1>Edit profile</h1>
 				<p>Hello, {currentUser.displayName}</p>
 				<AnimatePresence>
 					<motion.form
