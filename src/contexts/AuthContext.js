@@ -5,9 +5,11 @@ import {
 	sendEmailVerification,
 	signInWithEmailAndPassword,
 	signOut,
-	updateProfile,
+	updateProfile as updateUser,
 } from 'firebase/auth'
 import { auth } from '../firebaseConfig'
+import { doc, setDoc } from 'firebase/firestore'
+import { db } from '../firebaseConfig'
 
 const AuthContext = createContext()
 
@@ -19,15 +21,21 @@ export const AuthProvider = ({ children }) => {
 	const [currentUser, setCurrentUser] = useState()
 	const [loading, setLoading] = useState(true)
 
+	const addProfile = async (uid, profileData) => {
+		const profileRef = doc(db, `profiles/${uid}`)
+		return await setDoc(profileRef, { ...profileData, uid }, { merge: true })
+	}
+
 	const signUp = async (username, email, password) => {
 		const userCredentials = await createUserWithEmailAndPassword(
 			auth,
 			email,
 			password
 		)
-		await updateProfile(userCredentials.user, {
+		await updateUser(userCredentials.user, {
 			displayName: username,
 		})
+		await addProfile(userCredentials.user.uid, { handle: username })
 		await sendEmailVerification(userCredentials.user)
 		return userCredentials
 	}
