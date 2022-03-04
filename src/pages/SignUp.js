@@ -17,18 +17,16 @@ const SignUp = () => {
 	const { signUp } = useAuth()
 	const navigate = useNavigate()
 
-	const onSubmit = (form) => {
+	const onSubmit = async (form) => {
 		if (form.password !== form.confirmPassword) {
 			return setErrorMessage('Passwords must match')
 		}
-		;(async () => {
-			try {
-				await signUp(form.username, form.email, form.password)
-				navigate('/profile')
-			} catch (error) {
-				setErrorMessage(error.message)
-			}
-		})()
+		try {
+			await signUp(form.username, form.email, form.password)
+			navigate('/profile')
+		} catch (error) {
+			setErrorMessage(error.message)
+		}
 	}
 
 	// === STYLE ===
@@ -90,7 +88,7 @@ const SignUp = () => {
 					{...register('confirmPassword')}
 				/>
 				{(Object.keys(errors).length !== 0 || errorMessage) && (
-					<ErrorMessage icon>
+					<ErrorMessage icon layout>
 						{errorMessage
 							? errorMessage
 							: 'Username, email and password is required'}
