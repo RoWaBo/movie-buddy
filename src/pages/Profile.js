@@ -42,7 +42,7 @@ const Profile = () => {
 
 	function syncFormWithProfile(profile) {
 		setUserProfile(profile)
-		setFavMovieGenres(profile.favMovieGenres)
+		profile.favMovieGenres?.length > 0 && setFavMovieGenres(profile.favMovieGenres)
 		const inputFieldsToUpdate = ['name', 'age', 'bio']
 		inputFieldsToUpdate.forEach((inputField) =>
 			setValue(inputField, profile[inputField])
@@ -70,7 +70,7 @@ const Profile = () => {
 		}
 	}
 
-	const ifSelectedStyle = (genre) => (favMovieGenres.includes(genre) ? 'selected' : '')
+	const ifSelectedStyle = (genre) => (favMovieGenres?.includes(genre) ? 'selected' : '')
 
 	// === STYLE ===
 	const formStyle = css`
