@@ -76,6 +76,7 @@ const Profile = () => {
 
 			console.log('Profile added: ', form)
 			console.log('favMovieGenres: ', favMovieGenres)
+			alert('Profile has been saved!')
 		} catch (error) {
 			setError('firebase', { message: error.message })
 		}
@@ -123,10 +124,15 @@ const Profile = () => {
 			background: #bbf7d0;
 		}
 		.button {
-			max-width: fit-content;
+			width: fit-content;
 			padding: 0.5rem;
 			margin: 0.5rem 0;
 		}
+	`
+	const btnStyle = css`
+		width: fit-content;
+		padding: 0.5rem;
+		margin: 0.5rem 0;
 	`
 	if (!movieGenres) return <h1>Loading...</h1>
 	if (movieGenres)
@@ -198,11 +204,11 @@ const Profile = () => {
 							onClick={() => clearErrors()}>
 							save
 						</motion.button>
+						<button className='button' onClick={logout}>
+							Log out
+						</button>
 					</motion.form>
 				</AnimatePresence>
-				<button className='button' onClick={logout}>
-					Log out
-				</button>
 			</CenterContainer>
 		)
 }
