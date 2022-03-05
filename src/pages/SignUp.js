@@ -1,111 +1,104 @@
-import { AnimatePresence, motion } from "framer-motion";
-import ErrorMessage from "../components/ErrorMessage";
-import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { AnimatePresence, motion } from 'framer-motion'
+import ErrorMessage from '../components/ErrorMessage'
+import { useForm } from 'react-hook-form'
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
-import { useAuth } from "../contexts/AuthContext";
-import { Link, useNavigate } from "react-router-dom";
+import { css } from '@emotion/react'
+import { useAuth } from '../contexts/AuthContext'
+import { Link, useNavigate } from 'react-router-dom'
+import FieldRHF from '../components/FieldRHF'
+import CenterContainer from '../components/CenterContainer'
 
 const SignUp = () => {
 	const {
 		register,
 		handleSubmit,
 		formState: { errors },
-	} = useForm();
-	const [errorMessage, setErrorMessage] = useState();
-	const { signUp } = useAuth();
-	const navigate = useNavigate();
+		clearErrors,
+		setError,
+	} = useForm()
+	const { signUp } = useAuth()
+	const navigate = useNavigate()
 
-	const onSubmit = form => {
+	const onSubmit = async (form) => {
 		if (form.password !== form.confirmPassword) {
-			return setErrorMessage("Passwords must match");
+			return setError('confirmPassword', { message: 'Passwords must match' })
 		}
-		(async () => {
-			try {
-				await signUp(form.username, form.email, form.password);
-				navigate("/profile");
-			} catch (error) {
-				setErrorMessage(error.message);
-			}
-		})();
-	};
+		try {
+			await signUp(form.email, form.password)
+			navigate('/profile')
+		} catch (error) {
+			setError('firebase', { message: error.message })
+		}
+	}
 
 	// === STYLE ===
 	const formStyle = css`
-		width: 100%;
-		padding: 2rem;
-		.input {
-			display: block;
+		max-width: 400px;
+		min-width: 300px;
+		.button {
+			max-width: fit-content;
+			padding: 0.5rem;
+			margin: 0.5rem 0;
 		}
-	`;
+	`
 
 	return (
-		<AnimatePresence>
-			<motion.form
-				key="form"
-				css={formStyle}
-				onSubmit={handleSubmit(onSubmit)}
-				layout>
-				<motion.input
-					className="input"
-					layout
-					type="text"
-					placeholder={"username"}
-					onFocus={() => setErrorMessage(false)}
-					whileFocus={{ scale: 1.02 }}
-					{...register("username", {
-						required: "username is required",
-					})}
-				/>
-				<motion.input
-					className="input"
-					layout
-					type="text"
-					placeholder={"email"}
-					onFocus={() => setErrorMessage(false)}
-					whileFocus={{ scale: 1.02 }}
-					{...register("email", {
-						required: "email is required",
-					})}
-				/>
-				<motion.input
-					className="input"
-					layout
-					type="password"
-					placeholder="password"
-					onFocus={() => setErrorMessage(false)}
-					whileFocus={{ scale: 1.02 }}
-					{...register("password", {
-						required: "password is required",
-					})}
-				/>
-				<motion.input
-					className="input"
-					layout
-					type="password"
-					placeholder="confirm password"
-					onFocus={() => setErrorMessage(false)}
-					whileFocus={{ scale: 1.02 }}
-					{...register("confirmPassword")}
-				/>
-				{(Object.keys(errors).length !== 0 || errorMessage) && (
-					<ErrorMessage icon>
-						{errorMessage
-							? errorMessage
-							: "Username, email and password is required"}
-					</ErrorMessage>
-				)}
-				<motion.button layout type="submit">
-					Sign up
-				</motion.button>
-			</motion.form>
-			<motion.div key="linkContainer" layout>
-				<p>Already have an account?</p>
-				<Link to="/login">Log In</Link>
-			</motion.div>
-		</AnimatePresence>
-	);
-};
+		<CenterContainer>
+			<h1>Sign Up</h1>
+			<AnimatePresence>
+				<motion.form
+					key='form'
+					css={formStyle}
+					onSubmit={handleSubmit(onSubmit)}
+					layout>
+					<FieldRHF
+						className='input'
+						labelText='email *'
+						type='text'
+						errorMessage={errors.email?.message}
+						onChange={clearErrors}
+						{...register('email', {
+							required: 'email is required',
+						})}
+					/>
+					<FieldRHF
+						className='input'
+						labelText='password *'
+						type='password'
+						errorMessage={errors.password?.message}
+						onChange={clearErrors}
+						{...register('password', {
+							required: 'password is required',
+						})}
+					/>
+					<FieldRHF
+						className='input'
+						labelText='confirm password *'
+						type='password'
+						errorMessage={errors.confirmPassword?.message}
+						onChange={clearErrors}
+						{...register('confirmPassword')}
+					/>
+					{errors.firebase && (
+						<ErrorMessage icon layout>
+							{errors.firebase.message}
+						</ErrorMessage>
+					)}
+					<motion.button
+						className='button'
+						layout
+						type='submit'
+						onClick={() => clearErrors()}>
+						Sign up
+					</motion.button>
+				</motion.form>
+				<motion.div key='linkContainer' layout>
+					<p>Already have an account?</p>
+					<Link to='/login'>Log In</Link>
+				</motion.div>
+			</AnimatePresence>
+		</CenterContainer>
+	)
+}
 
-export default SignUp;
+export default SignUp

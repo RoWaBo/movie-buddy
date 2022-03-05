@@ -1,0 +1,19 @@
+{
+	"uid": "string",
+	"handle": "string",
+	"email": "string",
+	"name": "string",
+	"age": 1234,
+	"bio": "string",
+	"favGenres": ["string", "string"],
+	"profileImg": {
+		"url": "string"
+	}
+}
+{
+	"uid": "string",
+	"name": "string",
+	"age": 1234,
+	"bio": "string",
+	"favGenres": ["string", "string"],
+}
