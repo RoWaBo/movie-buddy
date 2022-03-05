@@ -22,7 +22,7 @@ const SignUp = () => {
 			return setErrorMessage('Passwords must match')
 		}
 		try {
-			await signUp(form.username, form.email, form.password)
+			await signUp(form.email, form.password)
 			navigate('/profile')
 		} catch (error) {
 			setErrorMessage(error.message)
@@ -49,18 +49,7 @@ const SignUp = () => {
 					className='input'
 					layout
 					type='text'
-					placeholder={'username'}
-					onFocus={() => setErrorMessage(false)}
-					whileFocus={{ scale: 1.02 }}
-					{...register('username', {
-						required: 'username is required',
-					})}
-				/>
-				<motion.input
-					className='input'
-					layout
-					type='text'
-					placeholder={'email'}
+					placeholder={'email *'}
 					onFocus={() => setErrorMessage(false)}
 					whileFocus={{ scale: 1.02 }}
 					{...register('email', {
@@ -71,7 +60,7 @@ const SignUp = () => {
 					className='input'
 					layout
 					type='password'
-					placeholder='password'
+					placeholder='password *'
 					onFocus={() => setErrorMessage(false)}
 					whileFocus={{ scale: 1.02 }}
 					{...register('password', {
@@ -82,16 +71,14 @@ const SignUp = () => {
 					className='input'
 					layout
 					type='password'
-					placeholder='confirm password'
+					placeholder='confirm password *'
 					onFocus={() => setErrorMessage(false)}
 					whileFocus={{ scale: 1.02 }}
 					{...register('confirmPassword')}
 				/>
 				{(Object.keys(errors).length !== 0 || errorMessage) && (
 					<ErrorMessage icon layout>
-						{errorMessage
-							? errorMessage
-							: 'Username, email and password is required'}
+						{errorMessage ? errorMessage : 'Email and password is required'}
 					</ErrorMessage>
 				)}
 				<motion.button layout type='submit'>

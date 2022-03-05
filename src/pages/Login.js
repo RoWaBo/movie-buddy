@@ -48,7 +48,7 @@ const Login = () => {
 					className='input'
 					layout
 					type='text'
-					placeholder={'email'}
+					placeholder={'email *'}
 					onFocus={() => setErrorMessage(false)}
 					whileFocus={{ scale: 1.02 }}
 					{...register('email', {
@@ -59,7 +59,7 @@ const Login = () => {
 					className='input'
 					layout
 					type='password'
-					placeholder='password'
+					placeholder='password *'
 					onFocus={() => setErrorMessage(false)}
 					whileFocus={{ scale: 1.02 }}
 					{...register('password', {
