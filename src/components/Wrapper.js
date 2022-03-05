@@ -8,6 +8,7 @@ const Wrapper = ({ children }) => {
 		width: 100%;
 		height: 100%;
 		margin: 0 auto;
+		padding: 2rem;
 		box-shadow: rgba(149, 157, 165, 0.1) 0px 8px 24px;
 	`
 

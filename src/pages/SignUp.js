@@ -1,7 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import ErrorMessage from '../components/ErrorMessage'
 import { useForm } from 'react-hook-form'
-import { useState } from 'react'
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react'
 import { useAuth } from '../contexts/AuthContext'
