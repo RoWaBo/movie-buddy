@@ -32,15 +32,28 @@ const Profile = () => {
 	const [favMovieGenres, setFavMovieGenres] = useState([])
 	const [usernameInputIsDisabled, setUsernameInputIsDisabled] = useState()
 
-	// Get current user profile if it exist
+	// Get current user profile if it exist and sync Form With Profile
 	useEffect(() => {
 		if (userProfile) return
 		;(async () => {
 			const profile = await getCurrentUserProfile()
-			profile && syncFormWithProfile(profile)
-			profile?.handle && setUsernameInputIsDisabled(true)
+			if (!profile) return
+
+			// === syncFormWithProfile
+			setUserProfile(profile)
+
+			profile.favMovieGenres?.length > 0 &&
+				setFavMovieGenres(profile.favMovieGenres)
+
+			const inputFieldsToUpdate = ['handle', 'name', 'age', 'bio']
+			inputFieldsToUpdate.forEach((inputField) =>
+				setValue(inputField, profile[inputField])
+			)
+			// ===
+
+			profile.handle && setUsernameInputIsDisabled(true)
 		})()
-	}, [userProfile, getCurrentUserProfile, syncFormWithProfile])
+	}, [userProfile, getCurrentUserProfile, setValue])
 	// Get movie genres
 	useEffect(() => {
 		if (movieGenres) return
@@ -49,15 +62,6 @@ const Profile = () => {
 			setMovieGenres(movieGenres)
 		})()
 	}, [movieGenres, getMovieGenres])
-
-	function syncFormWithProfile(profile) {
-		setUserProfile(profile)
-		profile.favMovieGenres?.length > 0 && setFavMovieGenres(profile.favMovieGenres)
-		const inputFieldsToUpdate = ['handle', 'name', 'age', 'bio']
-		inputFieldsToUpdate.forEach((inputField) =>
-			setValue(inputField, profile[inputField])
-		)
-	}
 
 	const onSubmit = async (form) => {
 		try {
@@ -94,10 +98,15 @@ const Profile = () => {
 	const formStyle = css`
 		max-width: 400px;
 		min-width: 300px;
+
 		.input,
 		.textarea {
 			display: block;
 			outline: none;
+		}
+		.textarea {
+			width: 100%;
+			height: 15vh;
 		}
 		.genreList {
 			display: flex;
@@ -123,7 +132,7 @@ const Profile = () => {
 	if (movieGenres)
 		return (
 			<CenterContainer>
-				<h1>Edit profile</h1>
+				<h1>Edit Profile</h1>
 				<AnimatePresence>
 					<motion.form
 						key='form'
