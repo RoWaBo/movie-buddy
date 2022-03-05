@@ -7,6 +7,7 @@ import { useForm } from 'react-hook-form'
 import { css } from '@emotion/react'
 import { useNavigate } from 'react-router-dom'
 import useProfile from '../hooks/useProfile'
+import InputRHS from '../components/InputRHF'
 
 const Profile = () => {
 	const {
@@ -14,14 +15,21 @@ const Profile = () => {
 		handleSubmit,
 		formState: { errors },
 		setValue,
+		clearErrors,
+		setError,
 	} = useForm()
-	const [errorMessage, setErrorMessage] = useState()
 	const navigate = useNavigate()
-	const { currentUser, logout } = useAuth()
-	const { addCurrentUserProfile, getCurrentUserProfile, getMovieGenres } = useProfile()
+	const { logout } = useAuth()
+	const {
+		addCurrentUserProfile,
+		getCurrentUserProfile,
+		getMovieGenres,
+		isHandleAvailable,
+	} = useProfile()
 	const [movieGenres, setMovieGenres] = useState()
 	const [userProfile, setUserProfile] = useState()
 	const [favMovieGenres, setFavMovieGenres] = useState([])
+	const [usernameInputIsDisabled, setUsernameInputIsDisabled] = useState()
 
 	// Get current user profile if it exist
 	useEffect(() => {
@@ -29,6 +37,7 @@ const Profile = () => {
 		;(async () => {
 			const profile = await getCurrentUserProfile()
 			profile && syncFormWithProfile(profile)
+			profile?.handle && setUsernameInputIsDisabled(true)
 		})()
 	}, [userProfile, getCurrentUserProfile, syncFormWithProfile])
 	// Get movie genres
@@ -43,7 +52,7 @@ const Profile = () => {
 	function syncFormWithProfile(profile) {
 		setUserProfile(profile)
 		profile.favMovieGenres?.length > 0 && setFavMovieGenres(profile.favMovieGenres)
-		const inputFieldsToUpdate = ['name', 'age', 'bio']
+		const inputFieldsToUpdate = ['handle', 'name', 'age', 'bio']
 		inputFieldsToUpdate.forEach((inputField) =>
 			setValue(inputField, profile[inputField])
 		)
@@ -53,9 +62,17 @@ const Profile = () => {
 		try {
 			console.log(form)
 			console.log('favMovieGenres: ', favMovieGenres)
-			addCurrentUserProfile({ ...form, favMovieGenres })
+
+			// Check if handle is available
+			const handleIsAvailable = await isHandleAvailable(form.handle)
+			if (!handleIsAvailable && !usernameInputIsDisabled) {
+				return setError('firebase', { message: 'Username is already taken' })
+			}
+
+			await addCurrentUserProfile({ ...form, favMovieGenres })
+			setUsernameInputIsDisabled(true)
 		} catch (error) {
-			setErrorMessage(error.message)
+			setError('firebase', { message: error.message })
 		}
 	}
 
@@ -79,6 +96,7 @@ const Profile = () => {
 		.input,
 		.textarea {
 			display: block;
+			outline: none;
 		}
 		.genreList {
 			display: flex;
@@ -100,36 +118,38 @@ const Profile = () => {
 		return (
 			<>
 				<h1>Edit profile</h1>
-				<p>Hello, {currentUser.displayName}</p>
 				<AnimatePresence>
 					<motion.form
 						key='form'
 						css={formStyle}
 						onSubmit={handleSubmit(onSubmit)}
 						layout>
-						<motion.input
-							className='input'
-							layout
+						<InputRHS
 							type='text'
-							placeholder={'name'}
-							onFocus={() => setErrorMessage(false)}
-							whileFocus={{ scale: 1.02 }}
+							placeholder={'username *'}
+							errorMessage={errors.handle?.message}
+							onChange={() => clearErrors()}
+							disabled={usernameInputIsDisabled}
+							{...register('handle', {
+								required: 'You must enter a username',
+							})}
+						/>
+						<InputRHS
+							className='input'
+							type='text'
+							placeholder='name'
 							{...register('name')}
 						/>
-						<motion.input
+						<InputRHS
 							className='input'
-							layout
 							type='number'
 							placeholder='age'
-							onFocus={() => setErrorMessage(false)}
-							whileFocus={{ scale: 1.02 }}
 							{...register('age')}
 						/>
 						<motion.textarea
 							className='textarea'
 							layout
 							placeholder='write bio'
-							onFocus={() => setErrorMessage(false)}
 							whileFocus={{ scale: 1.02 }}
 							{...register('bio')}
 						/>
@@ -151,8 +171,10 @@ const Profile = () => {
 								))}
 							</motion.ul>
 						</motion.section>
-						{errorMessage && <ErrorMessage icon>{errorMessage}</ErrorMessage>}
-						<motion.button layout type='submit'>
+						{errors.firebase && (
+							<ErrorMessage icon>{errors.firebase.message}</ErrorMessage>
+						)}
+						<motion.button layout type='submit' onClick={() => clearErrors()}>
 							save
 						</motion.button>
 					</motion.form>
