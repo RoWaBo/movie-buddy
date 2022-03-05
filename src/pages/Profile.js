@@ -7,7 +7,8 @@ import { useForm } from 'react-hook-form'
 import { css } from '@emotion/react'
 import { useNavigate } from 'react-router-dom'
 import useProfile from '../hooks/useProfile'
-import InputRHS from '../components/InputRHF'
+import FieldRHF from '../components/FieldRHF'
+import CenterContainer from '../components/CenterContainer'
 
 const Profile = () => {
 	const {
@@ -60,9 +61,6 @@ const Profile = () => {
 
 	const onSubmit = async (form) => {
 		try {
-			console.log(form)
-			console.log('favMovieGenres: ', favMovieGenres)
-
 			// Check if handle is available
 			const handleIsAvailable = await isHandleAvailable(form.handle)
 			if (!handleIsAvailable && !usernameInputIsDisabled) {
@@ -71,6 +69,9 @@ const Profile = () => {
 
 			await addCurrentUserProfile({ ...form, favMovieGenres })
 			setUsernameInputIsDisabled(true)
+
+			console.log('Profile added: ', form)
+			console.log('favMovieGenres: ', favMovieGenres)
 		} catch (error) {
 			setError('firebase', { message: error.message })
 		}
@@ -91,8 +92,8 @@ const Profile = () => {
 
 	// === STYLE ===
 	const formStyle = css`
-		width: 100%;
-		padding: 2rem;
+		max-width: 400px;
+		min-width: 300px;
 		.input,
 		.textarea {
 			display: block;
@@ -112,11 +113,16 @@ const Profile = () => {
 		.selected {
 			background: #bbf7d0;
 		}
+		.button {
+			max-width: fit-content;
+			padding: 0.5rem;
+			margin: 0.5rem 0;
+		}
 	`
 	if (!movieGenres) return <h1>Loading...</h1>
 	if (movieGenres)
 		return (
-			<>
+			<CenterContainer>
 				<h1>Edit profile</h1>
 				<AnimatePresence>
 					<motion.form
@@ -124,35 +130,37 @@ const Profile = () => {
 						css={formStyle}
 						onSubmit={handleSubmit(onSubmit)}
 						layout>
-						<InputRHS
+						<FieldRHF
+							labelText='username *'
 							type='text'
-							placeholder={'username *'}
 							errorMessage={errors.handle?.message}
-							onChange={() => clearErrors()}
+							onChange={clearErrors}
 							disabled={usernameInputIsDisabled}
 							{...register('handle', {
 								required: 'You must enter a username',
 							})}
 						/>
-						<InputRHS
+						<FieldRHF
 							className='input'
+							labelText='Name'
 							type='text'
-							placeholder='name'
 							{...register('name')}
 						/>
-						<InputRHS
+						<FieldRHF
 							className='input'
+							labelText='Age'
 							type='number'
-							placeholder='age'
 							{...register('age')}
 						/>
-						<motion.textarea
-							className='textarea'
-							layout
-							placeholder='write bio'
-							whileFocus={{ scale: 1.02 }}
-							{...register('bio')}
-						/>
+						<motion.label layout>
+							Bio
+							<motion.textarea
+								className='textarea'
+								layout
+								whileFocus={{ scale: 1.02 }}
+								{...register('bio')}
+							/>
+						</motion.label>
 						<motion.section className='genreSection' layout>
 							<motion.h2 layout>
 								Select your favorite movie genres
@@ -174,13 +182,19 @@ const Profile = () => {
 						{errors.firebase && (
 							<ErrorMessage icon>{errors.firebase.message}</ErrorMessage>
 						)}
-						<motion.button layout type='submit' onClick={() => clearErrors()}>
+						<motion.button
+							className='button'
+							layout
+							type='submit'
+							onClick={() => clearErrors()}>
 							save
 						</motion.button>
 					</motion.form>
 				</AnimatePresence>
-				<button onClick={logout}>Log out</button>
-			</>
+				<button className='button' onClick={logout}>
+					Log out
+				</button>
+			</CenterContainer>
 		)
 }
 
