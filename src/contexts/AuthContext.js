@@ -5,11 +5,9 @@ import {
 	sendEmailVerification,
 	signInWithEmailAndPassword,
 	signOut,
-	updateProfile as updateUser,
+	updateProfile,
 } from 'firebase/auth'
 import { auth } from '../firebaseConfig'
-import { doc, setDoc } from 'firebase/firestore'
-import { db } from '../firebaseConfig'
 
 const AuthContext = createContext()
 
@@ -21,21 +19,12 @@ export const AuthProvider = ({ children }) => {
 	const [currentUser, setCurrentUser] = useState()
 	const [loading, setLoading] = useState(true)
 
-	const addProfile = async (uid, profileData) => {
-		const profileRef = doc(db, `profiles/${uid}`)
-		return await setDoc(profileRef, { ...profileData, uid }, { merge: true })
-	}
-
-	const signUp = async (username, email, password) => {
+	const signUp = async (email, password) => {
 		const userCredentials = await createUserWithEmailAndPassword(
 			auth,
 			email,
 			password
 		)
-		await updateUser(userCredentials.user, {
-			displayName: username,
-		})
-		await addProfile(userCredentials.user.uid, { handle: username })
 		await sendEmailVerification(userCredentials.user)
 		return userCredentials
 	}
@@ -43,6 +32,8 @@ export const AuthProvider = ({ children }) => {
 	const login = (email, password) => signInWithEmailAndPassword(auth, email, password)
 
 	const logout = () => signOut(auth)
+
+	const updateCurrentUser = (userMap) => updateProfile(currentUser, userMap)
 
 	useEffect(() => {
 		const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -57,6 +48,7 @@ export const AuthProvider = ({ children }) => {
 		signUp,
 		login,
 		logout,
+		updateCurrentUser,
 	}
 
 	return (
