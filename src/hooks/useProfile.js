@@ -37,20 +37,28 @@ const useProfile = () => {
 		return movieGenres.data()
 	}
 
-	const isHandleAvailable = async (handle) => {
+	// returns strings: 'same as current user' | 'not available' | 'available'
+	const handleAvailabilityStatus = async (handle) => {
+		if (currentUser.displayName === handle) return 'same as current user'
+
 		const profilesRef = collection(db, 'profiles')
 		const q = query(profilesRef, where('handle', '==', handle))
 		const response = await getDocs(q)
+
 		let results = []
 		response.forEach((result) => results.push(result.data()))
-		return results.length > 0 ? false : true
+		if (results.length > 0) {
+			return 'not available'
+		} else {
+			return 'available'
+		}
 	}
 
 	return {
 		addCurrentUserProfile,
 		getCurrentUserProfile,
 		getMovieGenres,
-		isHandleAvailable,
+		isHandleAvailable: handleAvailabilityStatus,
 	}
 }
 

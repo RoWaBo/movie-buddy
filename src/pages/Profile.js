@@ -30,7 +30,6 @@ const Profile = () => {
 	const [movieGenres, setMovieGenres] = useState()
 	const [userProfile, setUserProfile] = useState()
 	const [favMovieGenres, setFavMovieGenres] = useState([])
-	const [usernameInputIsDisabled, setUsernameInputIsDisabled] = useState()
 
 	// Get current user profile if it exist and sync Form With Profile
 	useEffect(() => {
@@ -49,9 +48,6 @@ const Profile = () => {
 			inputFieldsToUpdate.forEach((inputField) =>
 				setValue(inputField, profile[inputField])
 			)
-			// ===
-
-			profile.handle && setUsernameInputIsDisabled(true)
 		})()
 	}, [userProfile, getCurrentUserProfile, setValue])
 	// Get movie genres
@@ -65,18 +61,17 @@ const Profile = () => {
 
 	const onSubmit = async (form) => {
 		try {
-			// Check if handle is available
-			const handleIsAvailable = await isHandleAvailable(form.handle)
-			if (!handleIsAvailable && !usernameInputIsDisabled) {
+			// Check if handle/username is available
+			const handleStatusMessage = await isHandleAvailable(form.handle)
+			if (handleStatusMessage === 'not available') {
 				return setError('firebase', { message: 'Username is already taken' })
 			}
 
 			await addCurrentUserProfile({ ...form, favMovieGenres })
-			setUsernameInputIsDisabled(true)
 
-			console.log('Profile added: ', form)
-			console.log('favMovieGenres: ', favMovieGenres)
-			alert('Profile has been saved!')
+			// console.log('Profile added: ', form)
+			// console.log('favMovieGenres: ', favMovieGenres)
+			console.log('Profile has been saved!')
 		} catch (error) {
 			setError('firebase', { message: error.message })
 		}
@@ -150,7 +145,6 @@ const Profile = () => {
 							type='text'
 							errorMessage={errors.handle?.message}
 							onChange={clearErrors}
-							disabled={usernameInputIsDisabled}
 							{...register('handle', {
 								required: 'You must enter a username',
 							})}
