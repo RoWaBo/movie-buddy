@@ -5,6 +5,7 @@ import Wrapper from './components/Wrapper'
 import { AuthProvider } from './contexts/AuthContext'
 import Login from './pages/Login'
 import Profile from './pages/Profile'
+import Search from './pages/Search'
 import SignUp from './pages/SignUp'
 
 function App() {
@@ -19,6 +20,14 @@ function App() {
 						element={
 							<RequireAuth>
 								<Profile />
+							</RequireAuth>
+						}
+					/>
+					<Route
+						path='/search'
+						element={
+							<RequireAuth>
+								<Search />
 							</RequireAuth>
 						}
 					/>
