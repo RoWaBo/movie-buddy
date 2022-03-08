@@ -58,7 +58,7 @@ const useProfile = () => {
 		addCurrentUserProfile,
 		getCurrentUserProfile,
 		getMovieGenres,
-		isHandleAvailable: handleAvailabilityStatus,
+		handleAvailabilityStatus,
 	}
 }
 
