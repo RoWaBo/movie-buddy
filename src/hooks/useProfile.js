@@ -13,16 +13,29 @@ import { db } from '../firebaseConfig'
 const useProfile = () => {
 	const { currentUser, updateCurrentUser } = useAuth()
 	const profileRef = doc(db, `profiles/${currentUser.uid}`)
+	const allHandlesRef = doc(db, `profiles/allHandles`)
 
 	const addCurrentUserProfile = async (profileData) => {
+		// set profile
 		await setDoc(
 			profileRef,
 			{ ...profileData, uid: currentUser.uid },
 			{ merge: true }
 		)
-		await updateCurrentUser({
-			displayName: profileData.handle,
-		})
+		// set allHandles
+		await setDoc(
+			allHandlesRef,
+			{
+				[currentUser.uid]: {
+					handle: profileData.handle,
+					pictureURL: profileData.pictureURL,
+				},
+			},
+			{ merge: true }
+		)
+		// await updateCurrentUser({
+		// 	displayName: profileData.handle,
+		// })
 	}
 
 	const getCurrentUserProfile = async () => {
