@@ -59,7 +59,7 @@ const Profile = () => {
 				setError('firebase', { message: error.message })
 			}
 		})()
-	}, [userProfile, getCurrentUserProfile, setValue])
+	}, [userProfile, getCurrentUserProfile, setValue, setError])
 
 	// Get movie genres
 	useEffect(() => {
