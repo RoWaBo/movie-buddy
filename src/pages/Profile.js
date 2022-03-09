@@ -5,11 +5,11 @@ import ErrorMessage from '../components/ErrorMessage'
 import { useForm } from 'react-hook-form'
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react'
-import { useNavigate } from 'react-router-dom'
 import useProfile from '../hooks/useProfile'
 import FieldRHF from '../components/FieldRHF'
 import CenterContainer from '../components/CenterContainer'
 import useStorage from '../hooks/useStorage'
+import ProfilePicture from '../components/ProfilePicture'
 
 const Profile = () => {
 	const {
@@ -20,19 +20,18 @@ const Profile = () => {
 		clearErrors,
 		setError,
 	} = useForm()
-	const navigate = useNavigate()
-	const { logout } = useAuth()
 	const {
 		addCurrentUserProfile,
 		getCurrentUserProfile,
 		getMovieGenres,
 		handleAvailabilityStatus,
 	} = useProfile()
+	const { logout } = useAuth()
 	const { uploadeProfilePicture } = useStorage()
 	const [movieGenres, setMovieGenres] = useState()
 	const [userProfile, setUserProfile] = useState()
 	const [favMovieGenres, setFavMovieGenres] = useState([])
-	const [profilePictureURL, setProfilePictureURL] = useState()
+	const [profilePictureURL, setProfilePictureURL] = useState('')
 
 	// Get current user profile if it exist and sync Form With Profile
 	useEffect(() => {
@@ -53,12 +52,15 @@ const Profile = () => {
 					setValue(inputField, profile[inputField])
 				)
 				// sync profile picture
-				profile.pictureURL !== '' && setProfilePictureURL(profile.pictureURL)
+				profile.pictureURL &&
+					profile.pictureURL !== '' &&
+					setProfilePictureURL(profile.pictureURL)
 			} catch (error) {
 				setError('firebase', { message: error.message })
 			}
 		})()
 	}, [userProfile, getCurrentUserProfile, setValue])
+
 	// Get movie genres
 	useEffect(() => {
 		if (movieGenres) return
@@ -147,11 +149,6 @@ const Profile = () => {
 			padding: 0.5rem;
 			margin: 0.5rem 0;
 		}
-		.profilePicture {
-			height: 200px;
-			object-fit: cover;
-			object-position: center;
-		}
 	`
 	const btnStyle = css`
 		width: fit-content;
@@ -199,6 +196,7 @@ const Profile = () => {
 								{...register('bio')}
 							/>
 						</motion.label>
+
 						<motion.section className='genreSection' layout>
 							<motion.h2 layout>
 								Select your favorite movie genres
@@ -229,11 +227,11 @@ const Profile = () => {
 									}
 								/>
 							</label>
-							{profilePictureURL && (
-								<img
-									className='profilePicture'
-									src={profilePictureURL}
-									alt='profile'
+							{profilePictureURL !== '' && (
+								<ProfilePicture
+									big
+									pictureURL={profilePictureURL}
+									alt={userProfile ? userProfile.handle : ''}
 								/>
 							)}
 						</section>
