@@ -5,8 +5,10 @@ const ProfilePicture = ({ big, medium, pictureURL, alt, ...props }) => {
 	const size = () => {
 		if (big) return '200px'
 		if (medium) return '100px'
-		return '50px'
+		return '60px'
 	}
+	const pictureSelector = () =>
+		pictureURL ? pictureURL : '/assets/defaultprofilepic.png'
 
 	const pictureStyle = css`
 		width: ${size()};
@@ -18,11 +20,7 @@ const ProfilePicture = ({ big, medium, pictureURL, alt, ...props }) => {
 		box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
 	`
 
-	return (
-		// <div css={pictureContainerStyle} {...props}>
-		// </div>
-		<img src={pictureURL} alt={alt} css={pictureStyle} {...props} />
-	)
+	return <img src={pictureSelector()} alt={alt} css={pictureStyle} {...props} />
 }
 
 export default ProfilePicture
