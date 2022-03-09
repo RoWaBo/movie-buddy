@@ -3,7 +3,7 @@ import { css } from '@emotion/react'
 import { motion } from 'framer-motion'
 import { useState, useEffect } from 'react'
 
-const SelectorMenu = ({ options, setSelectedOption }) => {
+const SelectorMenu = ({ options, setSelectedOption, ...props }) => {
 	const [selectedItemI, setSelectedItemI] = useState(1)
 
 	useEffect(() => {
@@ -41,13 +41,12 @@ const SelectorMenu = ({ options, setSelectedOption }) => {
 
 	return (
 		<>
-			<section>
+			<section {...props}>
 				<ul css={listStyle}>
 					{options.map((item, i) => (
 						<motion.li
 							css={itemStyle}
 							key={i}
-							layout
 							onTap={() => setSelectedItemI(i)}
 							animate={
 								i === selectedItemI ? { color: 'rgb(255 255 255)' } : {}
