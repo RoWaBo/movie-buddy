@@ -1,4 +1,3 @@
-import { motion } from 'framer-motion'
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react'
 import { forwardRef } from 'react'
@@ -28,19 +27,11 @@ const FieldRHF = forwardRef(({ labelText, errorMessage, ...props }, ref) => {
 	`
 
 	return (
-		<motion.label layout css={labelStyle}>
+		<label css={labelStyle}>
 			<span css={labelTextStyle}>{labelText}</span>
-			<motion.input
-				ref={ref}
-				{...props}
-				css={[input, errorMessage && inputError]}
-				layout
-				whileFocus={{
-					scale: 1.02,
-				}}
-			/>
+			<input ref={ref} {...props} css={[input, errorMessage && inputError]} />
 			{errorMessage && <p css={errorText}>{errorMessage}</p>}
-		</motion.label>
+		</label>
 	)
 })
 

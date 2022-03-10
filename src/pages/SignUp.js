@@ -1,4 +1,3 @@
-import { AnimatePresence, motion } from 'framer-motion'
 import ErrorMessage from '../components/ErrorMessage'
 import { useForm } from 'react-hook-form'
 /** @jsxImportSource @emotion/react */
@@ -45,58 +44,46 @@ const SignUp = () => {
 	return (
 		<CenterContainer>
 			<h1>Sign Up</h1>
-			<AnimatePresence>
-				<motion.form
-					key='form'
-					css={formStyle}
-					onSubmit={handleSubmit(onSubmit)}
-					layout>
-					<FieldRHF
-						className='input'
-						labelText='email *'
-						type='text'
-						errorMessage={errors.email?.message}
-						onChange={clearErrors}
-						{...register('email', {
-							required: 'email is required',
-						})}
-					/>
-					<FieldRHF
-						className='input'
-						labelText='password *'
-						type='password'
-						errorMessage={errors.password?.message}
-						onChange={clearErrors}
-						{...register('password', {
-							required: 'password is required',
-						})}
-					/>
-					<FieldRHF
-						className='input'
-						labelText='confirm password *'
-						type='password'
-						errorMessage={errors.confirmPassword?.message}
-						onChange={clearErrors}
-						{...register('confirmPassword')}
-					/>
-					{errors.firebase && (
-						<ErrorMessage icon layout>
-							{errors.firebase.message}
-						</ErrorMessage>
-					)}
-					<motion.button
-						className='button'
-						layout
-						type='submit'
-						onClick={() => clearErrors()}>
-						Sign up
-					</motion.button>
-				</motion.form>
-				<motion.div key='linkContainer' layout>
-					<p>Already have an account?</p>
-					<Link to='/login'>Log In</Link>
-				</motion.div>
-			</AnimatePresence>
+			<form key='form' css={formStyle} onSubmit={handleSubmit(onSubmit)}>
+				<FieldRHF
+					className='input'
+					labelText='email *'
+					type='text'
+					errorMessage={errors.email?.message}
+					onChange={clearErrors}
+					{...register('email', {
+						required: 'email is required',
+					})}
+				/>
+				<FieldRHF
+					className='input'
+					labelText='password *'
+					type='password'
+					errorMessage={errors.password?.message}
+					onChange={clearErrors}
+					{...register('password', {
+						required: 'password is required',
+					})}
+				/>
+				<FieldRHF
+					className='input'
+					labelText='confirm password *'
+					type='password'
+					errorMessage={errors.confirmPassword?.message}
+					onChange={clearErrors}
+					{...register('confirmPassword')}
+				/>
+				{errors.firebase && (
+					<ErrorMessage icon>{errors.firebase.message}</ErrorMessage>
+				)}
+				<button className='button' type='submit' onClick={() => clearErrors()}>
+					Sign up
+				</button>
+			</form>
+			<div key='linkContainer'>
+				<p>Already have an account?</p>
+				<Link to='/login'>Log In</Link>
+			</div>
 		</CenterContainer>
 	)
 }

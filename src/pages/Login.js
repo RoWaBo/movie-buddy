@@ -1,4 +1,3 @@
-import { AnimatePresence, motion } from 'framer-motion'
 import ErrorMessage from '../components/ErrorMessage'
 import { useForm } from 'react-hook-form'
 /** @jsxImportSource @emotion/react */
@@ -44,50 +43,38 @@ const Login = () => {
 	return (
 		<CenterContainer>
 			<h1>Log In</h1>
-			<AnimatePresence>
-				<motion.form
-					key='form'
-					css={formStyle}
-					onSubmit={handleSubmit(onSubmit)}
-					layout>
-					<FieldRHF
-						className='input'
-						labelText='Email *'
-						type='text'
-						errorMessage={errors.email?.message}
-						onChange={clearErrors}
-						{...register('email', {
-							required: 'email is required',
-						})}
-					/>
-					<FieldRHF
-						className='input'
-						labelText='Password *'
-						type='password'
-						errorMessage={errors.password?.message}
-						onChange={clearErrors}
-						{...register('password', {
-							required: 'password is required',
-						})}
-					/>
-					{errors.firebase && (
-						<ErrorMessage icon layout>
-							{errors.firebase.message}
-						</ErrorMessage>
-					)}
-					<motion.button
-						className='button'
-						layout
-						type='submit'
-						onClick={() => clearErrors()}>
-						Log in
-					</motion.button>
-				</motion.form>
-				<motion.div key='linkContainer' layout>
-					<p>Need an account?</p>
-					<Link to='/signup'>Sign Up</Link>
-				</motion.div>
-			</AnimatePresence>
+			<form key='form' css={formStyle} onSubmit={handleSubmit(onSubmit)}>
+				<FieldRHF
+					className='input'
+					labelText='Email *'
+					type='text'
+					errorMessage={errors.email?.message}
+					onChange={clearErrors}
+					{...register('email', {
+						required: 'email is required',
+					})}
+				/>
+				<FieldRHF
+					className='input'
+					labelText='Password *'
+					type='password'
+					errorMessage={errors.password?.message}
+					onChange={clearErrors}
+					{...register('password', {
+						required: 'password is required',
+					})}
+				/>
+				{errors.firebase && (
+					<ErrorMessage icon>{errors.firebase.message}</ErrorMessage>
+				)}
+				<button className='button' type='submit' onClick={() => clearErrors()}>
+					Log in
+				</button>
+			</form>
+			<div key='linkContainer'>
+				<p>Need an account?</p>
+				<Link to='/signup'>Sign Up</Link>
+			</div>
 		</CenterContainer>
 	)
 }
