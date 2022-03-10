@@ -1,15 +1,14 @@
 import { useEffect, useState } from 'react'
 import { useAuth } from '../contexts/AuthContext'
-import { AnimatePresence, motion } from 'framer-motion'
 import ErrorMessage from '../components/ErrorMessage'
 import { useForm } from 'react-hook-form'
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react'
 import useProfile from '../hooks/useProfile'
 import FieldRHF from '../components/FieldRHF'
-import CenterContainer from '../components/CenterContainer'
 import useStorage from '../hooks/useStorage'
 import ProfilePicture from '../components/ProfilePicture'
+import axios from 'axios'
 
 const Profile = () => {
 	const {
@@ -20,12 +19,8 @@ const Profile = () => {
 		clearErrors,
 		setError,
 	} = useForm()
-	const {
-		addCurrentUserProfile,
-		getCurrentUserProfile,
-		getMovieGenres,
-		handleAvailabilityStatus,
-	} = useProfile()
+	const { addCurrentUserProfile, getCurrentUserProfile, handleAvailabilityStatus } =
+		useProfile()
 	const { logout } = useAuth()
 	const { uploadeProfilePicture } = useStorage()
 	const [movieGenres, setMovieGenres] = useState()
@@ -65,10 +60,10 @@ const Profile = () => {
 	useEffect(() => {
 		if (movieGenres) return
 		;(async () => {
-			const { movieGenres } = await getMovieGenres()
-			setMovieGenres(movieGenres)
+			const { data } = await axios('movieGenres.json')
+			setMovieGenres(data.genres)
 		})()
-	}, [movieGenres, getMovieGenres])
+	}, [movieGenres])
 
 	const onSubmit = async (form) => {
 		try {
@@ -135,11 +130,13 @@ const Profile = () => {
 			flex-wrap: wrap;
 		}
 		.genreListItem {
-			width: 100px;
-			padding: 1rem 0;
+			width: 130px;
+			padding: 0.5rem 0;
+			margin: 0.3rem;
 			text-align: center;
 			text-transform: capitalize;
-			border: 1px solid rgba(0, 0, 0, 0.5);
+			border: 1px solid rgba(0, 0, 0, 0.3);
+			border-radius: 20px;
 		}
 		.selected {
 			background: #bbf7d0;
@@ -149,109 +146,103 @@ const Profile = () => {
 			padding: 0.5rem;
 			margin: 0.5rem 0;
 		}
+		.pictureSection {
+			margin: 2rem 0;
+		}
 	`
 	const btnStyle = css`
 		width: fit-content;
 		padding: 0.5rem;
 		margin: 0.5rem 0;
 	`
+	const topHeadingStyle = css`
+		margin: 2rem 0;
+	`
 	if (!movieGenres) return <h1>Loading...</h1>
 	if (movieGenres)
 		return (
-			<CenterContainer>
-				<h1>Edit Profile</h1>
-				<AnimatePresence>
-					<motion.form
-						key='form'
-						css={formStyle}
-						onSubmit={handleSubmit(onSubmit)}
-						layout>
-						<FieldRHF
-							labelText='username *'
-							type='text'
-							errorMessage={errors.handle?.message}
-							onChange={clearErrors}
-							{...register('handle', {
-								required: 'You must enter a username',
-							})}
+			<>
+				<h1 css={topHeadingStyle}>Edit Profile</h1>
+				<form key='form' css={formStyle} onSubmit={handleSubmit(onSubmit)}>
+					<FieldRHF
+						labelText='username *'
+						type='text'
+						errorMessage={errors.handle?.message}
+						onChange={clearErrors}
+						{...register('handle', {
+							required: 'You must enter a username',
+						})}
+					/>
+					<FieldRHF
+						className='input'
+						labelText='Name'
+						type='text'
+						{...register('name')}
+					/>
+					<FieldRHF
+						className='input'
+						labelText='Age'
+						type='number'
+						{...register('age')}
+					/>
+					<label>
+						Bio
+						<textarea
+							className='textarea'
+							whileFocus={{ scale: 1.02 }}
+							{...register('bio')}
 						/>
-						<FieldRHF
-							className='input'
-							labelText='Name'
-							type='text'
-							{...register('name')}
-						/>
-						<FieldRHF
-							className='input'
-							labelText='Age'
-							type='number'
-							{...register('age')}
-						/>
-						<motion.label layout>
-							Bio
-							<motion.textarea
-								className='textarea'
-								layout
-								whileFocus={{ scale: 1.02 }}
-								{...register('bio')}
+					</label>
+
+					<section className='pictureSection'>
+						<h2>Uploade profile picture</h2>
+						<label>
+							Select picture
+							<input
+								type='file'
+								onChange={(e) =>
+									handleProfilePictureUploade(e.target.files[0])
+								}
 							/>
-						</motion.label>
-
-						<motion.section className='genreSection' layout>
-							<motion.h2 layout>
-								Select your favorite movie genres
-							</motion.h2>
-							<motion.ul className='genreList' layout>
-								{movieGenres?.map((genre, i) => (
-									<motion.li
-										key={i}
-										className={`genreListItem ${ifSelectedStyle(
-											genre
-										)}`}
-										onClick={() => toggleGenre(genre)}
-										layout>
-										{genre}
-									</motion.li>
-								))}
-							</motion.ul>
-						</motion.section>
-
-						<section>
-							<h2>Uploade profile picture</h2>
-							<label>
-								Select picture
-								<input
-									type='file'
-									onChange={(e) =>
-										handleProfilePictureUploade(e.target.files[0])
-									}
-								/>
-							</label>
-							{profilePictureURL !== '' && (
-								<ProfilePicture
-									big
-									pictureURL={profilePictureURL}
-									alt={userProfile ? userProfile.handle : ''}
-								/>
-							)}
-						</section>
-
-						{errors.firebase && (
-							<ErrorMessage icon>{errors.firebase.message}</ErrorMessage>
+						</label>
+						{profilePictureURL !== '' && (
+							<ProfilePicture
+								big
+								pictureURL={profilePictureURL}
+								alt={userProfile ? userProfile.handle : ''}
+							/>
 						)}
-						<motion.button
-							className='button'
-							layout
-							type='submit'
-							onClick={() => clearErrors()}>
-							save
-						</motion.button>
-						<button className='button' onClick={logout}>
-							Log out
-						</button>
-					</motion.form>
-				</AnimatePresence>
-			</CenterContainer>
+					</section>
+
+					<section className='genreSection'>
+						<h2>Select your favorite movie genres</h2>
+						<ul className='genreList'>
+							{movieGenres?.map(({ id, name }) => (
+								<li
+									key={id}
+									className={`genreListItem ${ifSelectedStyle(name)}`}
+									onClick={() => toggleGenre(name)}>
+									{name}
+								</li>
+							))}
+						</ul>
+					</section>
+
+					{errors.firebase && (
+						<ErrorMessage icon>{errors.firebase.message}</ErrorMessage>
+					)}
+
+					<button
+						className='button'
+						type='submit'
+						onClick={() => clearErrors()}>
+						save
+					</button>
+					<button className='button' onClick={logout}>
+						Log out
+					</button>
+				</form>
+			</>
 		)
 }
 

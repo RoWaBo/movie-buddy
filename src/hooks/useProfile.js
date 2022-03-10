@@ -44,12 +44,6 @@ const useProfile = () => {
 		return profile.data()
 	}
 
-	const getMovieGenres = async () => {
-		const movieGenreRef = doc(db, `movieGenres/movieGenresDoc`)
-		const movieGenres = await getDoc(movieGenreRef)
-		return movieGenres.data()
-	}
-
 	const getAllHandles = async () => {
 		const allHandles = await getDoc(allHandlesRef)
 		const allHandlesToArray = Object.entries(allHandles.data())
@@ -80,7 +74,6 @@ const useProfile = () => {
 	return {
 		addCurrentUserProfile,
 		getCurrentUserProfile,
-		getMovieGenres,
 		handleAvailabilityStatus,
 		getAllHandles,
 	}
