@@ -9,8 +9,9 @@ import FieldRHF from '../components/FieldRHF'
 import useStorage from '../hooks/useStorage'
 import ProfilePicture from '../components/ProfilePicture'
 import axios from 'axios'
+import { gutter } from '../style/styleVariables'
 
-const Profile = () => {
+const EditProfile = () => {
 	const {
 		register,
 		handleSubmit,
@@ -19,8 +20,11 @@ const Profile = () => {
 		clearErrors,
 		setError,
 	} = useForm()
-	const { addCurrentUserProfile, getCurrentUserProfile, handleAvailabilityStatus } =
-		useProfile()
+	const {
+		addCurrentUserProfile,
+		getCurrentUserProfile,
+		handleAvailabilityStatus,
+	} = useProfile()
 	const { logout } = useAuth()
 	const { uploadeProfilePicture } = useStorage()
 	const [movieGenres, setMovieGenres] = useState()
@@ -68,9 +72,13 @@ const Profile = () => {
 	const onSubmit = async (form) => {
 		try {
 			// Check if handle/username is available
-			const handleStatusMessage = await handleAvailabilityStatus(form.handle)
+			const handleStatusMessage = await handleAvailabilityStatus(
+				form.handle
+			)
 			if (handleStatusMessage === 'not available') {
-				return setError('firebase', { message: 'Username is already taken' })
+				return setError('firebase', {
+					message: 'Username is already taken',
+				})
 			}
 
 			await addCurrentUserProfile({
@@ -99,7 +107,8 @@ const Profile = () => {
 		}
 	}
 
-	const ifSelectedStyle = (genre) => (favMovieGenres?.includes(genre) ? 'selected' : '')
+	const ifSelectedStyle = (genre) =>
+		favMovieGenres?.includes(genre) ? 'selected' : ''
 
 	const handleProfilePictureUploade = async (file) => {
 		if (!file) return
@@ -107,11 +116,16 @@ const Profile = () => {
 			const profilePictureURL = await uploadeProfilePicture(file)
 			setProfilePictureURL(profilePictureURL)
 		} catch (error) {
-			setError('firebase', { message: 'Profile picture failed to uploade' })
+			setError('firebase', {
+				message: 'Profile picture failed to uploade',
+			})
 		}
 	}
 
 	// === STYLE ===
+	const mainStyle = css`
+		padding: 0 ${gutter};
+	`
 	const formStyle = css`
 		max-width: 400px;
 		min-width: 300px;
@@ -156,14 +170,17 @@ const Profile = () => {
 		margin: 0.5rem 0;
 	`
 	const topHeadingStyle = css`
-		margin: 2rem 0;
+		margin: ${gutter} 0;
 	`
 	if (!movieGenres) return <h1>Loading...</h1>
 	if (movieGenres)
 		return (
-			<>
+			<main css={mainStyle}>
 				<h1 css={topHeadingStyle}>Edit Profile</h1>
-				<form key='form' css={formStyle} onSubmit={handleSubmit(onSubmit)}>
+				<form
+					key='form'
+					css={formStyle}
+					onSubmit={handleSubmit(onSubmit)}>
 					<FieldRHF
 						labelText='username *'
 						type='text'
@@ -187,11 +204,7 @@ const Profile = () => {
 					/>
 					<label>
 						Bio
-						<textarea
-							className='textarea'
-							whileFocus={{ scale: 1.02 }}
-							{...register('bio')}
-						/>
+						<textarea className='textarea' {...register('bio')} />
 					</label>
 
 					<section className='pictureSection'>
@@ -201,7 +214,9 @@ const Profile = () => {
 							<input
 								type='file'
 								onChange={(e) =>
-									handleProfilePictureUploade(e.target.files[0])
+									handleProfilePictureUploade(
+										e.target.files[0]
+									)
 								}
 							/>
 						</label>
@@ -220,7 +235,9 @@ const Profile = () => {
 							{movieGenres?.map(({ id, name }) => (
 								<li
 									key={id}
-									className={`genreListItem ${ifSelectedStyle(name)}`}
+									className={`genreListItem ${ifSelectedStyle(
+										name
+									)}`}
 									onClick={() => toggleGenre(name)}>
 									{name}
 								</li>
@@ -229,7 +246,9 @@ const Profile = () => {
 					</section>
 
 					{errors.firebase && (
-						<ErrorMessage icon>{errors.firebase.message}</ErrorMessage>
+						<ErrorMessage icon>
+							{errors.firebase.message}
+						</ErrorMessage>
 					)}
 
 					<button
@@ -242,8 +261,8 @@ const Profile = () => {
 						Log out
 					</button>
 				</form>
-			</>
+			</main>
 		)
 }
 
-export default Profile
+export default EditProfile
