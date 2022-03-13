@@ -6,21 +6,25 @@ import useSearch from '../hooks/useSearch'
 import useProfile from '../hooks/useProfile'
 import ErrorMessage from '../components/ErrorMessage'
 import ProfileListItem from '../components/ProfileListItem'
+import { gutter } from '../style/styleVariables'
+import GenreDrawer from '../components/GenreDrawer'
 
 const Search = () => {
 	const { getAllHandles } = useProfile()
-	const { searchByHandle } = useSearch()
+	const { searchProfilesByGenre } = useSearch()
 	const [searchInputValue, setSearchInputValue] = useState('')
 	const [selectedOption, setSelectedOption] = useState()
 	const [searchResult, setSearchResult] = useState([])
 	const [allHandles, setAllHandles] = useState([])
 	const [error, setError] = useState()
 
+	// Get all handles when selectedOption changes
 	useEffect(() => {
 		if (allHandles.length > 0) return
 		;(async () => {
 			try {
 				if (selectedOption === 'username') {
+					console.log('getAllHandles')
 					const allHandles = await getAllHandles()
 					setAllHandles([...allHandles])
 				}
@@ -30,38 +34,40 @@ const Search = () => {
 		})()
 	}, [selectedOption, getAllHandles, allHandles])
 
+	// Filter and set searchResults when searchInputValue changes
 	useEffect(() => {
 		if (searchInputValue === '') return
-		const filteredHandles = allHandles.filter(({ handle }) => {
-			return handle.toLowerCase().includes(searchInputValue.toLowerCase())
-		})
-		setSearchResult([...filteredHandles])
-	}, [searchInputValue, allHandles])
-
-	const handleSubmit = async () => {
-		if (searchInputValue === '') return
-
-		console.log('Search: ', searchInputValue)
-		console.log('Selected Option: ', selectedOption)
-
-		let result
-
-		if (selectedOption === 'username') {
-			result = await searchByHandle(searchInputValue)
-			console.log(result)
-		}
-		setSearchResult([...result])
-	}
+		;(async () => {
+			let filteredSearch
+			if (selectedOption === 'username') {
+				const filteredHandles = allHandles.filter(({ handle }) => {
+					return handle
+						.toLowerCase()
+						.includes(searchInputValue.toLowerCase())
+				})
+				filteredSearch = filteredHandles
+			}
+			if (selectedOption === 'genre') {
+				const result = await searchProfilesByGenre(
+					searchInputValue.toLowerCase()
+				)
+				filteredSearch = result
+			}
+			console.log('searchResult set')
+			setSearchResult([...filteredSearch])
+		})()
+	}, [searchInputValue, allHandles, selectedOption])
 
 	// === STYLING ===
 	const containerStyle = css`
 		.topHeading {
-			margin: 2rem 0;
+			margin: ${gutter};
 		}
-		.input,
-		button {
+		.searchInput {
 			display: block;
 			padding: 0.5rem;
+			margin: ${gutter};
+			width: 80%;
 		}
 		.selectorMenu {
 			margin: 1rem 0;
@@ -72,21 +78,25 @@ const Search = () => {
 		<main css={containerStyle}>
 			<h1 className='topHeading'>User Search</h1>
 			<input
-				placeholder='search'
-				className='input'
+				placeholder={`search by ${selectedOption}`}
+				className='searchInput'
 				type='text'
 				value={searchInputValue}
 				onChange={(e) => setSearchInputValue(e.target.value)}
 			/>
 			<SelectorMenu
 				className='selectorMenu'
-				options={['Genre', 'Username', 'Keywords']}
+				options={['Genre', 'Username', 'Keyword']}
 				setSelectedOption={setSelectedOption}
+				onClick={() => setSearchInputValue('')}
 			/>
-			{/* <button onClick={handleSubmit}>Search</button> */}
+			{selectedOption === 'genre' && (
+				<GenreDrawer
+					onClick={(e) => setSearchInputValue(e.target.dataset.name)}
+				/>
+			)}
 			<ul>
 				{searchInputValue !== '' &&
-					selectedOption === 'username' &&
 					searchResult.map(({ uid, handle, pictureURL }) => (
 						<ProfileListItem
 							key={uid}
