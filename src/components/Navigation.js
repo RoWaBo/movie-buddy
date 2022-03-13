@@ -63,6 +63,13 @@ const Navigation = () => {
 			color: #3b3c3a;
 		}
 	`
+	const pictureStyle = css`
+		width: 48px;
+		height: 48px;
+	`
+	const noPaddingStyle = css`
+		padding: 0;
+	`
 
 	return (
 		<nav css={navStyle}>
@@ -94,9 +101,12 @@ const Navigation = () => {
 				<li css={itemStyle}>
 					<NavLink
 						to='/editprofile'
-						css={linkStyle}
+						css={[linkStyle, noPaddingStyle]}
 						style={({ isActive }) => activeLinkStyleIf(isActive)}>
-						<ProfilePicture pictureURL={profilePicture} />
+						<ProfilePicture
+							pictureURL={profilePicture}
+							css={pictureStyle}
+						/>
 					</NavLink>
 				</li>
 			</ul>
