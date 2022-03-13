@@ -20,11 +20,13 @@ const SignUp = () => {
 
 	const onSubmit = async (form) => {
 		if (form.password !== form.confirmPassword) {
-			return setError('confirmPassword', { message: 'Passwords must match' })
+			return setError('confirmPassword', {
+				message: 'Passwords must match',
+			})
 		}
 		try {
 			await signUp(form.email, form.password)
-			navigate('/profile')
+			navigate('/')
 		} catch (error) {
 			setError('firebase', { message: error.message })
 		}
@@ -76,7 +78,10 @@ const SignUp = () => {
 				{errors.firebase && (
 					<ErrorMessage icon>{errors.firebase.message}</ErrorMessage>
 				)}
-				<button className='button' type='submit' onClick={() => clearErrors()}>
+				<button
+					className='button'
+					type='submit'
+					onClick={() => clearErrors()}>
 					Sign up
 				</button>
 			</form>

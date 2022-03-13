@@ -22,7 +22,7 @@ const Login = () => {
 		;(async () => {
 			try {
 				await login(form.email, form.password)
-				navigate('/profile')
+				navigate('/')
 			} catch (error) {
 				setError('firebase', { message: error.message })
 			}
@@ -67,7 +67,10 @@ const Login = () => {
 				{errors.firebase && (
 					<ErrorMessage icon>{errors.firebase.message}</ErrorMessage>
 				)}
-				<button className='button' type='submit' onClick={() => clearErrors()}>
+				<button
+					className='button'
+					type='submit'
+					onClick={() => clearErrors()}>
 					Log in
 				</button>
 			</form>

@@ -47,10 +47,12 @@ const useProfile = () => {
 	const getAllHandles = async () => {
 		const allHandles = await getDoc(allHandlesRef)
 		const allHandlesToArray = Object.entries(allHandles.data())
-		const allHandlesToArrayWithMap = allHandlesToArray.map(([key, values]) => ({
-			uid: key,
-			...values,
-		}))
+		const allHandlesToArrayWithMap = allHandlesToArray.map(
+			([key, values]) => ({
+				uid: key,
+				...values,
+			})
+		)
 		return allHandlesToArrayWithMap
 	}
 
