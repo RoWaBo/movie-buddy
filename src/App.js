@@ -25,15 +25,8 @@ function App() {
 							</RequireAuth>
 						}
 					/>
-					<Route
-						path='/search'
-						element={
-							<RequireAuth>
-								<Search />
-							</RequireAuth>
-						}
-					/>
-					{/* <Route path='*' element={<Login />} /> */}
+					<Route path='/search' element={<Search />} />
+					<Route path='*' element={<Login />} />
 				</Routes>
 			</Wrapper>
 			{pathname !== '/login' && pathname !== '/signup' && <Navigation />}
