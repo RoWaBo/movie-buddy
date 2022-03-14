@@ -12,7 +12,7 @@ import { db } from '../firebaseConfig'
 
 const useProfile = () => {
 	const { currentUser, updateCurrentUser } = useAuth()
-	const profileRef = doc(db, `profiles/${currentUser.uid}`)
+	const profileRef = doc(db, `profiles/${currentUser?.uid}`)
 	const allHandlesRef = doc(db, `profiles/allHandles`)
 
 	const addCurrentUserProfile = async (profileData) => {
@@ -33,14 +33,13 @@ const useProfile = () => {
 			},
 			{ merge: true }
 		)
-		// await updateCurrentUser({
-		// 	displayName: profileData.handle,
-		// })
+		await updateCurrentUser({
+			displayName: profileData.handle,
+		})
 	}
 
 	const getCurrentUserProfile = async () => {
 		const profile = await getDoc(profileRef)
-		// console.log('Current profile: ', profile.data())
 		return profile.data()
 	}
 

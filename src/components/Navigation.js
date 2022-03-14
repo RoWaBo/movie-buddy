@@ -16,8 +16,8 @@ const Navigation = () => {
 	useEffect(() => {
 		if (profilePicture) return
 		;(async () => {
-			const { pictureURL } = await getCurrentUserProfile()
-			setProfilePicture(pictureURL)
+			const profile = await getCurrentUserProfile()
+			profile && setProfilePicture(profile.pictureURL)
 		})()
 	}, [profilePicture, getCurrentUserProfile])
 

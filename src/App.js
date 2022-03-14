@@ -28,7 +28,6 @@ function App() {
 						}
 					/>
 					<Route path='/search' element={<Search />} />
-					{/* <Route path='*' element={<Login />} /> */}
 				</Routes>
 			</Wrapper>
 			{pathname !== '/login' && pathname !== '/signup' && <Navigation />}
