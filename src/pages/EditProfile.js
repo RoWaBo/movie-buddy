@@ -10,6 +10,7 @@ import useStorage from '../hooks/useStorage'
 import ProfilePicture from '../components/ProfilePicture'
 import axios from 'axios'
 import { gutter } from '../style/styleVariables'
+import LoadingGif from '../components/LoadingGif'
 
 const EditProfile = () => {
 	const {
@@ -188,7 +189,7 @@ const EditProfile = () => {
 	const topHeadingStyle = css`
 		margin: ${gutter} 0;
 	`
-	if (!movieGenres) return <h1>Loading...</h1>
+
 	if (movieGenres)
 		return (
 			<main css={mainStyle}>
@@ -279,6 +280,7 @@ const EditProfile = () => {
 				</form>
 			</main>
 		)
+	if (!movieGenres) return <LoadingGif />
 }
 
 export default EditProfile
