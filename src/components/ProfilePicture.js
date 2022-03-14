@@ -18,9 +18,12 @@ const ProfilePicture = ({ big, medium, pictureURL, alt, ...props }) => {
 		border-radius: 50%;
 		border: 1px solid rgb(0 0 0 / 10%);
 		box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+		background: rgba(149, 157, 165, 0.2);
 	`
 
-	return <img src={pictureSelector()} alt={alt} css={pictureStyle} {...props} />
+	return (
+		<img src={pictureSelector()} alt={alt} css={pictureStyle} {...props} />
+	)
 }
 
 export default ProfilePicture

@@ -9,6 +9,7 @@ import EditProfile from './pages/EditProfile'
 import Search from './pages/Search'
 import SignUp from './pages/SignUp'
 import Home from './pages/Home'
+import Profile from './pages/Profile'
 
 function App() {
 	const { pathname } = useLocation()
@@ -19,6 +20,7 @@ function App() {
 					<Route path='/login' element={<Login />} />
 					<Route path='/signup' element={<SignUp />} />
 					<Route path='/' element={<Home />} />
+					<Route path='/profile/:uid' element={<Profile />} />
 					<Route
 						path='/editprofile'
 						element={

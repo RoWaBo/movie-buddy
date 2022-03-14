@@ -43,6 +43,12 @@ const useProfile = () => {
 		return profile.data()
 	}
 
+	const getUserProfileByUid = async (uid) => {
+		const ref = doc(db, `profiles/${uid}`)
+		const profile = await getDoc(ref)
+		return profile.data()
+	}
+
 	const getAllHandles = async () => {
 		const allHandles = await getDoc(allHandlesRef)
 		const allHandlesToArray = Object.entries(allHandles.data())
@@ -77,6 +83,7 @@ const useProfile = () => {
 		getCurrentUserProfile,
 		handleAvailabilityStatus,
 		getAllHandles,
+		getUserProfileByUid,
 	}
 }
 

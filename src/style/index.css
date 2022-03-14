@@ -27,6 +27,10 @@ img {
 ul {
 	list-style: none;
 }
+a {
+	color: rgba(0, 0, 0, 0.8);
+	text-decoration: none;
+}
 /* === SCROLLBAR === */
 ::-webkit-scrollbar {
 	width: 0.5rem;

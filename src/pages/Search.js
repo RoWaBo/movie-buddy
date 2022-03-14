@@ -8,6 +8,7 @@ import ErrorMessage from '../components/ErrorMessage'
 import ProfileListItem from '../components/ProfileListItem'
 import { gutter } from '../style/styleVariables'
 import GenreDrawer from '../components/GenreDrawer'
+import { useNavigate } from 'react-router-dom'
 
 const Search = () => {
 	const { getAllHandles } = useProfile()
@@ -17,6 +18,7 @@ const Search = () => {
 	const [searchResult, setSearchResult] = useState([])
 	const [allHandles, setAllHandles] = useState([])
 	const [error, setError] = useState()
+	const navigate = useNavigate()
 
 	// Get all handles when selectedOption changes
 	useEffect(() => {
@@ -24,7 +26,6 @@ const Search = () => {
 		;(async () => {
 			try {
 				if (selectedOption === 'username') {
-					console.log('getAllHandles')
 					const allHandles = await getAllHandles()
 					setAllHandles([...allHandles])
 				}
@@ -56,7 +57,6 @@ const Search = () => {
 					searchInputValue.toLowerCase()
 				)
 			}
-			console.log('searchResult set')
 			setSearchResult([...filteredSearch])
 		})()
 	}, [searchInputValue, allHandles, selectedOption])
@@ -105,6 +105,7 @@ const Search = () => {
 							key={uid}
 							handle={handle}
 							pictureURL={pictureURL}
+							onClick={() => navigate(`/profile/${uid}`)}
 						/>
 					))}
 			</ul>
