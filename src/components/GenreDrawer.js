@@ -16,6 +16,7 @@ const GenreDrawer = ({ ...props }) => {
 	const genreListStyle = css`
 		display: flex;
 		overflow-x: scroll;
+		padding: 0.5rem;
 
 		.genreListItem {
 			min-width: fit-content;
@@ -26,6 +27,7 @@ const GenreDrawer = ({ ...props }) => {
 			text-transform: capitalize;
 			border: 1px solid rgba(0, 0, 0, 0.3);
 			border-radius: 20px;
+			box-shadow: rgba(99, 99, 99, 0.1) 0px 2px 8px 0px;
 			font-size: 14px;
 		}
 	`

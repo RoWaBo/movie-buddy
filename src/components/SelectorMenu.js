@@ -21,7 +21,7 @@ const SelectorMenu = ({ options, setSelectedOption, ...props }) => {
 		width: 100%;
 		height: 100%;
 		border-radius: 10px;
-		padding: 1rem 1.5rem;
+		padding: 0.5rem 1rem;
 		text-align: center;
 		position: relative;
 		color: rgba(0, 0, 0, 0.7);
@@ -49,7 +49,9 @@ const SelectorMenu = ({ options, setSelectedOption, ...props }) => {
 							key={i}
 							onTap={() => setSelectedItemI(i)}
 							animate={
-								i === selectedItemI ? { color: 'rgb(255 255 255)' } : {}
+								i === selectedItemI
+									? { color: 'rgb(255 255 255)' }
+									: {}
 							}
 							transition={{ duration: 0.2 }}>
 							{item}
