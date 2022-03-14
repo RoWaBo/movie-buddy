@@ -1,4 +1,3 @@
-import { AnimatePresence, motion } from 'framer-motion'
 import ErrorMessage from '../components/ErrorMessage'
 import { useForm } from 'react-hook-form'
 /** @jsxImportSource @emotion/react */
@@ -7,6 +6,8 @@ import { useAuth } from '../contexts/AuthContext'
 import { Link, useNavigate } from 'react-router-dom'
 import FieldRHF from '../components/FieldRHF'
 import CenterContainer from '../components/CenterContainer'
+import { useState } from 'react'
+import LoadingGif from '../components/LoadingGif'
 
 const SignUp = () => {
 	const {
@@ -18,15 +19,20 @@ const SignUp = () => {
 	} = useForm()
 	const { signUp } = useAuth()
 	const navigate = useNavigate()
+	const [loading, setLoading] = useState(false)
 
 	const onSubmit = async (form) => {
 		if (form.password !== form.confirmPassword) {
-			return setError('confirmPassword', { message: 'Passwords must match' })
+			return setError('confirmPassword', {
+				message: 'Passwords must match',
+			})
 		}
 		try {
+			setLoading(true)
 			await signUp(form.email, form.password)
-			navigate('/profile')
+			navigate('/')
 		} catch (error) {
+			setLoading(false)
 			setError('firebase', { message: error.message })
 		}
 	}
@@ -42,15 +48,14 @@ const SignUp = () => {
 		}
 	`
 
-	return (
-		<CenterContainer>
-			<h1>Sign Up</h1>
-			<AnimatePresence>
-				<motion.form
+	if (!loading)
+		return (
+			<CenterContainer>
+				<h1>Sign Up</h1>
+				<form
 					key='form'
 					css={formStyle}
-					onSubmit={handleSubmit(onSubmit)}
-					layout>
+					onSubmit={handleSubmit(onSubmit)}>
 					<FieldRHF
 						className='input'
 						labelText='email *'
@@ -80,25 +85,24 @@ const SignUp = () => {
 						{...register('confirmPassword')}
 					/>
 					{errors.firebase && (
-						<ErrorMessage icon layout>
+						<ErrorMessage icon>
 							{errors.firebase.message}
 						</ErrorMessage>
 					)}
-					<motion.button
+					<button
 						className='button'
-						layout
 						type='submit'
 						onClick={() => clearErrors()}>
 						Sign up
-					</motion.button>
-				</motion.form>
-				<motion.div key='linkContainer' layout>
+					</button>
+				</form>
+				<div key='linkContainer'>
 					<p>Already have an account?</p>
 					<Link to='/login'>Log In</Link>
-				</motion.div>
-			</AnimatePresence>
-		</CenterContainer>
-	)
+				</div>
+			</CenterContainer>
+		)
+	if (loading) return <LoadingGif />
 }
 
 export default SignUp

@@ -1,0 +1,76 @@
+{
+	"genres": [
+		{
+			"id": 1,
+			"name": "action"
+		},
+		{
+			"id": 2,
+			"name": "adventure"
+		},
+		{
+			"id": 3,
+			"name": "animation"
+		},
+		{
+			"id": 4,
+			"name": "comedy"
+		},
+		{
+			"id": 5,
+			"name": "crime"
+		},
+		{
+			"id": 6,
+			"name": "documentary"
+		},
+		{
+			"id": 7,
+			"name": "drama"
+		},
+		{
+			"id": 8,
+			"name": "family"
+		},
+		{
+			"id": 9,
+			"name": "fantasy"
+		},
+		{
+			"id": 10,
+			"name": "history"
+		},
+		{
+			"id": 11,
+			"name": "horror"
+		},
+		{
+			"id": 12,
+			"name": "music"
+		},
+		{
+			"id": 13,
+			"name": "mystery"
+		},
+		{
+			"id": 14,
+			"name": "romance"
+		},
+		{
+			"id": 15,
+			"name": "science fiction"
+		},
+		{
+			"id": 16,
+			"name": "thriller"
+		},
+		{
+			"id": 17,
+			"name": "war"
+		},
+		{
+			"id": 18,
+			"name": "western"
+		}
+	]
+}

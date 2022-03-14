@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react'
 
-const CenterContainer = ({ children }) => {
+const CenterContainer = ({ children, ...props }) => {
 	const containerStyle = css`
 		width: 100%;
 		height: 100%;
@@ -9,7 +9,11 @@ const CenterContainer = ({ children }) => {
 		display: grid;
 		place-content: center;
 	`
-	return <div css={containerStyle}>{children}</div>
+	return (
+		<div {...props} css={containerStyle}>
+			{children}
+		</div>
+	)
 }
 
 export default CenterContainer
