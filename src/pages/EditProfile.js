@@ -69,6 +69,17 @@ const EditProfile = () => {
 		})()
 	}, [movieGenres])
 
+	const bioHashtagsToKeywordArray = (bioText) => {
+		let hashtags = bioText.match(/\#[^\s]+/gm)
+		if (hashtags) {
+			hashtags = hashtags.map((hashtag) =>
+				hashtag.substring(1).toLowerCase()
+			)
+			return hashtags
+		}
+		return []
+	}
+
 	const onSubmit = async (form) => {
 		try {
 			// Check if handle/username is available
@@ -81,15 +92,19 @@ const EditProfile = () => {
 				})
 			}
 
+			const keywords = bioHashtagsToKeywordArray(form.bio)
+
 			await addCurrentUserProfile({
 				...form,
 				favMovieGenres,
 				pictureURL: profilePictureURL,
+				keywords,
 			})
 
 			console.log('Profile added: ', form)
 			console.log('favMovieGenres: ', favMovieGenres)
 			console.log('profilePictureURL: ', profilePictureURL)
+			console.log('keywords: ', keywords)
 			console.log('Profile has been saved!')
 		} catch (error) {
 			setError('firebase', { message: error.message })
@@ -151,6 +166,7 @@ const EditProfile = () => {
 			text-transform: capitalize;
 			border: 1px solid rgba(0, 0, 0, 0.3);
 			border-radius: 20px;
+			box-shadow: rgba(99, 99, 99, 0.1) 0px 2px 8px 0px;
 		}
 		.selected {
 			background: #bbf7d0;
