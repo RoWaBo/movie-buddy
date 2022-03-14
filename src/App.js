@@ -8,6 +8,7 @@ import Login from './pages/Login'
 import EditProfile from './pages/EditProfile'
 import Search from './pages/Search'
 import SignUp from './pages/SignUp'
+import Home from './pages/Home'
 
 function App() {
 	const { pathname } = useLocation()
@@ -17,6 +18,7 @@ function App() {
 				<Routes>
 					<Route path='/login' element={<Login />} />
 					<Route path='/signup' element={<SignUp />} />
+					<Route path='/' element={<Home />} />
 					<Route
 						path='/editprofile'
 						element={
@@ -26,7 +28,7 @@ function App() {
 						}
 					/>
 					<Route path='/search' element={<Search />} />
-					<Route path='*' element={<Login />} />
+					{/* <Route path='*' element={<Login />} /> */}
 				</Routes>
 			</Wrapper>
 			{pathname !== '/login' && pathname !== '/signup' && <Navigation />}
