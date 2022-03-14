@@ -11,7 +11,7 @@ import GenreDrawer from '../components/GenreDrawer'
 
 const Search = () => {
 	const { getAllHandles } = useProfile()
-	const { searchProfilesByGenre } = useSearch()
+	const { searchProfilesByGenre, searchProfilesByKeyword } = useSearch()
 	const [searchInputValue, setSearchInputValue] = useState('')
 	const [selectedOption, setSelectedOption] = useState()
 	const [searchResult, setSearchResult] = useState([])
@@ -38,20 +38,23 @@ const Search = () => {
 	useEffect(() => {
 		if (searchInputValue === '') return
 		;(async () => {
-			let filteredSearch
+			let filteredSearch = []
 			if (selectedOption === 'username') {
-				const filteredHandles = allHandles.filter(({ handle }) => {
+				filteredSearch = allHandles.filter(({ handle }) => {
 					return handle
 						.toLowerCase()
 						.includes(searchInputValue.toLowerCase())
 				})
-				filteredSearch = filteredHandles
 			}
 			if (selectedOption === 'genre') {
-				const result = await searchProfilesByGenre(
+				filteredSearch = await searchProfilesByGenre(
 					searchInputValue.toLowerCase()
 				)
-				filteredSearch = result
+			}
+			if (selectedOption === 'keyword') {
+				filteredSearch = await searchProfilesByKeyword(
+					searchInputValue.toLowerCase()
+				)
 			}
 			console.log('searchResult set')
 			setSearchResult([...filteredSearch])

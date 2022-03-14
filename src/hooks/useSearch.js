@@ -1,26 +1,19 @@
-import {
-	doc,
-	getDoc,
-	getDocs,
-	setDoc,
-	collection,
-	query,
-	where,
-} from 'firebase/firestore'
-import { useAuth } from '../contexts/AuthContext'
+import { getDocs, collection, query, where } from 'firebase/firestore'
 import { db } from '../firebaseConfig'
 
 const useSearch = () => {
-	const { currentUser, updateCurrentUser } = useAuth()
 	const profilesRef = collection(db, 'profiles')
+
+	const applyDataOnEachItemInArray = (items) => {
+		let array = []
+		items.forEach((item) => array.push(item.data()))
+		return array
+	}
 
 	const searchProfilesByHandle = async (handle) => {
 		const q = query(profilesRef, where('handle', '==', handle))
 		const response = await getDocs(q)
-
-		let results = []
-		response.forEach((result) => results.push(result.data()))
-		return results
+		return applyDataOnEachItemInArray(response)
 	}
 	const searchProfilesByGenre = async (genre) => {
 		const q = query(
@@ -28,15 +21,21 @@ const useSearch = () => {
 			where('favMovieGenres', 'array-contains', genre)
 		)
 		const response = await getDocs(q)
-
-		let results = []
-		response.forEach((result) => results.push(result.data()))
-		return results
+		return applyDataOnEachItemInArray(response)
+	}
+	const searchProfilesByKeyword = async (keyword) => {
+		const q = query(
+			profilesRef,
+			where('keywords', 'array-contains', keyword)
+		)
+		const response = await getDocs(q)
+		return applyDataOnEachItemInArray(response)
 	}
 
 	return {
 		searchProfilesByHandle,
 		searchProfilesByGenre,
+		searchProfilesByKeyword,
 	}
 }
 
