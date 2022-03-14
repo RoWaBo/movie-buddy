@@ -12,8 +12,7 @@ const SelectorMenu = ({ options, setSelectedOption, ...props }) => {
 
 	// === STYLING ===
 	const listStyle = css`
-		border-radius: 10px;
-		border: 1px solid rgba(0, 0, 0, 0.2);
+		border-bottom: 1px solid rgba(0, 0, 0, 0.2);
 		display: flex;
 		justify-content: space-between;
 	`
@@ -28,10 +27,10 @@ const SelectorMenu = ({ options, setSelectedOption, ...props }) => {
 	`
 	const itemBackground = css`
 		position: absolute;
-		top: 0;
+		bottom: 0;
 		right: 0;
 		width: 100%;
-		height: 100%;
+		height: 10%;
 		background: #3b82f6;
 		border-radius: 10px;
 		z-index: -1;
@@ -48,11 +47,6 @@ const SelectorMenu = ({ options, setSelectedOption, ...props }) => {
 							css={itemStyle}
 							key={i}
 							onTap={() => setSelectedItemI(i)}
-							animate={
-								i === selectedItemI
-									? { color: 'rgb(255 255 255)' }
-									: {}
-							}
 							transition={{ duration: 0.2 }}>
 							{item}
 							{i === selectedItemI && (

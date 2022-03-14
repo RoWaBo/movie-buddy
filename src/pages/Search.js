@@ -66,8 +66,8 @@ const Search = () => {
 		.searchInput {
 			display: block;
 			padding: 0.5rem;
-			margin: ${gutter};
-			width: 80%;
+			margin: ${gutter} ${gutter} 0.5rem ${gutter};
+			width: 82%;
 		}
 		.selectorMenu {
 			margin-top: 1rem;
